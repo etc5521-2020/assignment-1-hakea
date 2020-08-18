@@ -17,7 +17,7 @@ output:
 
 Coffee is the most popular beverage in the whole world. Let's see, you're reading this with a cup of coffee,aren't you? 
 
-So wouldn't it be interesting to know how the coffee you drink is graded to be either the best or bad depending on different factors of the beans? The country with the best graded coffee beans, the different factors which elucidate the quality of the coffee cultivated.
+So wouldn't it be interesting to know how the coffee you drink is graded to be either the best or bad coffee batches? The country with the best graded coffee beans and why are they considered the best, the different factors which elucidate the quality of the coffee cultivated. From where they come, the processing method to get them?
 
 
 # Data description
@@ -28,9 +28,9 @@ So wouldn't it be interesting to know how the coffee you drink is graded to be e
 
 *Time Frame of dataset*: January 2018
 
-The original data is a dataframe was scraped by James LeDoux from the Coffee Quality Institute website which has a few missing values coliumns within it, so the author has cleaned the dataset by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc.
+The original data is a dataframe was scraped by James LeDoux from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the dataset by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc.
 
-Further the variable names within the arabica dataset was cleaned using the *clean_names()* function form the **janitor R package**, which helps remove any symbols within the name to give a clean format. And the robusta data was read with some column specifications and the same process of cleaning the variable names was used on the second dataset as well, and a few variable names were changed for the user’s better understanding by using the *rename()* function: 
+Further the variable names within the arabica dataset was cleaned using the *clean_names()* function form the **janitor R package**, which helps remove any symbols within the name to give a clean format. And the robusta data was read with some column specifications and the same process of cleaning the variable names was used on the second dataset as well, and a few variable names were changed for the user’s better understanding and the literal meaning of each variable by using the *rename()* function: 
 Acidity to salt_acid, sweetness to bitter_sweet, aroma to fragrance_aroma, etc.
 
 Since both these datasets are just two different species of coffee , they were joined to produce the dataset which we now use “coffee_ratings.csv” with 1339 observations and 43 variables. 
