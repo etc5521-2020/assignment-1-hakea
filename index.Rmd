@@ -1,10 +1,10 @@
 ---
 title: "ETC5521 Assignment 1"
 subtitle: "Your title"
-team: [FILL]
+team: Hakea
 author:
-  - [FILL]
-  - [FILL]
+  - SiddhantV Tirodkar
+  - Varsha Ujjinni Vijay Kumar
 date: "`r Sys.Date()`"
 output: 
   html_document
@@ -15,12 +15,70 @@ output:
 
 # Introduction and motivation
 
-[FILL] Give the bigger picture of the data, and inspire the reader to learn more about the problem by reading your analysis. 
+Coffee is the most popular beverage in the whole world. Let's see, you're reading this with a cup of coffee,aren't you? 
+
+So wouldn't it be interesting to know how the coffee you drink is graded to be either the best or bad depending on different factors of the beans? The country with the best graded coffee beans, the different factors which elucidate the quality of the coffee cultivated.
+
 
 # Data description
+
+*Source of data* : This data originally comes from Coffee Quality Institute website and was scraped by and used by  a github account by  [James DeLoux](https://github.com/jldbc/coffee-quality-database) ,this data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv) . And this dataset was analysed by [Yorgos Askalidis](https://towardsdatascience.com/the-data-speak-ethiopia-has-the-best-coffee-91f88ed37e84).
+
+*Collection Methods*: This dataset contains the review of 1312 arabica 28 robusta beans from the Coffee Quality Institute’s trained reviewers. 
+
+*Time Frame of dataset*: January 2018
+
+The original data is a dataframe was scraped by James LeDoux from the Coffee Quality Institute website which has a few missing values coliumns within it, so the author has cleaned the dataset by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc.
+
+Further the variable names within the arabica dataset was cleaned using the *clean_names()* function form the **janitor R package**, which helps remove any symbols within the name to give a clean format. And the robusta data was read with some column specifications and the same process of cleaning the variable names was used on the second dataset as well, and a few variable names were changed for the user’s better understanding by using the *rename()* function: 
+Acidity to salt_acid, sweetness to bitter_sweet, aroma to fragrance_aroma, etc.
+
+Since both these datasets are just two different species of coffee , they were joined to produce the dataset which we now use “coffee_ratings.csv” with 1339 observations and 43 variables. 
+
+```{r data, message=FALSE, warning=FALSE,include=FALSE}
+# Read in with tidytuesdayR package 
+# Install from CRAN via: install.packages("tidytuesdayR")
+
+tuesdata <- tidytuesdayR::tt_load('2020-07-07')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 28)
+
+coffee_ratings <- tuesdata$coffee_ratings
+```
+
+Structure of data: 
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(kableExtra)
+glimpse(coffee_ratings) 
+```
+
+After this knowing what each of those variables define with respect to our topic is important so here are a few variables we should know the general meaning to in accordance with coffee:
+
+- Aroma(aroma grade) : Has both fragrance(ground beans) and aroma (hot water with coffee powder) 
+
+- Aftertaste : length of positive flavor remaining after the coffee is swallowed.
+
+- Acidity : the score depends on the origin characteristics and other factors(degree of roast)
+
+- Uniformity : refers to the consistency of flavor . 2 points are awarded for each cup displaying this attribute, with a maximum of 10 points if all 5 cups are the same.
+
+- Clean_cup : refers to a lack of interfering negative impressions from first ingestion to final aftertaste, a "transparency" of cup.  2 points are awarded for each cup displaying the attribute.
+
+- Cupper_points : The cupper marks the intensity of the Aroma on a scale. A final score for Fragrance and Aroma is now given on the basis of a combined evaluation of Fragrance and Aroma.
+
+- Category 1 defect: Full black or sour bean, pod/cherry, and large or medium sticks or stones.
+
+
+- Category 2 defect: Parchment, hull/husk, broken/chipped, insect damage, partial black or sour, shell, small sticks or stones, water damage.
+
+- Quakers: Quakers are unripened beans that are hard to identify during hand sorting and green bean inspection.
+
 
 # Analysis and findings
 
 [FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
 
 # References
+
+
