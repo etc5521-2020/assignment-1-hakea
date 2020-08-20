@@ -1,9 +1,9 @@
 ---
 title: "ETC5521 Assignment 1"
-subtitle: "Your title"
+subtitle: "All about Coffee"
 team: Hakea
 author:
-  - SiddhantV Tirodkar
+  - Siddhant V Tirodkar
   - Varsha Ujjinni Vijay Kumar
 date: "`r Sys.Date()`"
 output: 
@@ -73,6 +73,18 @@ After this knowing what each of those variables define with respect to our topic
 - Category 2 defect: Parchment, hull/husk, broken/chipped, insect damage, partial black or sour, shell, small sticks or stones, water damage.
 
 - Quakers: Quakers are unripened beans that are hard to identify during hand sorting and green bean inspection.
+
+QUestions :
+
+- Which Country produces the best quality coffee beans?
+
+- Does Altitude really affect the quality of the beans produced?
+
+- Which countries perform best on individual grading criterias such as aroma, acidity, sweetness etc?
+
+- Which regions/companies perform better than others in the quality of the coffee beans produced,  intra-country?
+
+- Which was the best year of coffee harvest?
 
 
 # Analysis and findings
