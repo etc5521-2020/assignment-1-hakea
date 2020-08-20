@@ -80,11 +80,9 @@ QUestions :
 
 - Does Altitude really affect the quality of the beans produced?
 
-- Which countries perform best on individual grading criterias such as aroma, acidity, sweetness etc?
+- Which countries perform best on individual grading criteria such as aroma, acidity, sweetness etc?
 
 - Which regions/companies perform better than others in the quality of the coffee beans produced,  intra-country?
-
-- Which was the best year of coffee harvest?
 
 
 # Analysis and findings
@@ -93,4 +91,7 @@ QUestions :
 
 # References
 
+- The dataset was taken from (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-07/readme.md)
+
+- Further inferences were drawn into the data taking help from (https://database.coffeeinstitute.org/coffee/357789/grade)
 
