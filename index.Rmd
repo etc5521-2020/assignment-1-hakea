@@ -121,6 +121,27 @@ plot(one.way, which = 1, col = c("blue"))
 res <- cor.test(coffee_ratings$total_cup_points, as.numeric(coffee_ratings$altitude)) %>% broom::tidy()
 res
 ```
+
+```{r}
+method <- lm(total_cup_points ~ processing_method, coffee_ratings) 
+method %>%  broom::tidy()
+```
+```{r}
+m <- method %>% broom::augment()
+ggplot(method, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth(se = TRUE)
+```
+
+
+```{r}
+factors <- lm(total_cup_points ~ aroma + flavor + aftertaste + acidity + body + balance + uniformity + clean_cup + sweetness + cupper_points + moisture, coffee_ratings) 
+factors %>% broom::tidy()
+```
+
+```{r}
+f <- broom::augment(factors)
+ggplot(f, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
+```
+
 # References
 
 - The dataset was taken from (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-07/readme.md)
