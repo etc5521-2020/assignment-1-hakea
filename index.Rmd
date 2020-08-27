@@ -273,6 +273,18 @@ ggplot(reg,
             fill = country_of_origin)) + 
 geom_col()
 ```
+
+```{r}
+# highest producer using bags
+highest_produce <- coffee_ratings %>% group_by(country_of_origin,species) %>% summarise(nob = sum(number_of_bags)) %>% arrange(desc(nob)) %>% head()
+
+ggplot(highest_produce, 
+       aes(x = reorder(country_of_origin, - nob), 
+           y = nob)) + 
+  geom_col(fill = "deepskyblue4") +
+  geom_text(label =  highest_produce$species)
+```
+
 # References
 
 - The dataset was taken from (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-07/readme.md)
