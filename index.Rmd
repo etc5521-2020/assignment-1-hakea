@@ -105,19 +105,16 @@ ggplot(coun,
 ```
 
 ```{r}
- lm(total_cup_points ~ altitude, coffee_ratings) %>%   broom::tidy()
+ lm(total_cup_points ~ altitude_mean_meters, coffee_ratings) %>%   broom::tidy()
 ```
 
 ```{r}
-one.way <- aov(total_cup_points ~ altitude , data = coffee_ratings)
-summary(one.way) 
+ggplot(data = coffee_ratings, aes(x = total_cup_points, y = altitude_mean_meters)) +
+  geom_point() +
+  geom_smooth(method = lm)
 ```
 
-```{r}
-plot(one.way, which = 1, col = c("blue"))
-```
-
-```{r warning=FALSE, message=FALSE}
+```{r eval=FALSE, warning=FALSE, message=FALSE}
 res <- cor.test(coffee_ratings$total_cup_points, as.numeric(coffee_ratings$altitude)) %>% broom::tidy()
 res
 ```
