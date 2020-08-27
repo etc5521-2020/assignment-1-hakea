@@ -45,11 +45,10 @@ coffee_ratings <- tuesdata$coffee_ratings
 
 Structure of data: 
 
-```{r libraries message=FALSE, warning=FALSE}
+```{r libraries, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(kableExtra)
 library(fmsb)
-glimpse(coffee_ratings) 
 ```
 
 After this knowing what each of those variables define with respect to our topic is important so here are a few variables we should know the general meaning to in accordance with coffee:
@@ -91,7 +90,7 @@ Coffee beans are harvested, produced and exported throughout almost every countr
 ## Best Quality Beans
 
 So to address the primary question as **Which country produces best quality coffee beans?** as we can see in `r figr("best-country",TRUE,type = "Figure")` clearly most owners of top-20 best quality coffee beans produced are in Ethiopia followed by the United States. The **total_cup_points** is plotted on a pie-chart. The *total_cup_points** variable denotes the overall rating achieved by the coffee bean awarded by the Coffee Quality Institute's trained reviewers. This rating is a cumulative sum of 10 individual quality measures like aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. In the later section of this report we will also look at how the major countries perform individually on each of these criterias.
-```{r best-country, anchor = "Figure", results='asis'}
+```{r best-country, anchor = "Figure", results='asis', fig.cap="Best country quality-wise"}
 coun <- coffee_ratings %>% 
   select(total_cup_points,species,country_of_origin,owner) %>% 
   group_by(country_of_origin) %>% 
@@ -112,10 +111,10 @@ ggplot(coun,
 Next, we will will probe into the next question **Does Altitude really affect the quality of the beans produced?** and to explore this we have fitted a linear model. **total_cup points** is the dependent variable and *altitude_mean_meters* as the independent variable. We have considered only the top 1105 observations for constructing the model because 3 extreme values and missing values were rendering a statistically insignificant model with a p-value of more than 0.9. The fitted model returns a p-value of 0.0003 which suggests that the model is statistically significant. `r figr("alt-plot",TRUE,type = "Figure")`  shows a positive relationship between altitude and quality of coffee beans produced. Altitude plays an important role in the formation of acidity and bitterness and enhances coffee quality attributes.
 
 ```{r alt-lrm}
- lm(total_cup_points ~ altitude_mean_meters, coffee_ratings) %>%   broom::tidy()
+ lm(total_cup_points ~ altitude_mean_meters, coffee_ratings) %>%   broom::tidy() %>% kable(caption = "Altitude v/s Quality stats") %>% kable_styling()
 ```
 
-```{r alt-plot, anchor = "Figure", results='asis'}
+```{r alt-plot, anchor = "Figure", results='asis', fig.cap="Regression model for Altitude"}
 ggplot(data = coffee_ratings, aes(x = total_cup_points, y = altitude_mean_meters)) +
   geom_point() +
   geom_smooth(method = lm)
@@ -285,7 +284,7 @@ After looking at these plots, the conclusion drawn are as follows: The common ch
 
 To respond to our final question **Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?** we use a barplot in `r figr("regions",TRUE,type = "Figure")`. The x-axis shows the total points a coffe bean recieves and the y-axis depicts the different regions where they were produced. The bars are coloured according to the country they belong to. Evidently Hulia is a region in Colombia where coffee beans get consistent good ratings and is the best region to grow coffee beans.
 
-```{r regions, anchor = "Figure", results='asis', message=FALSE,warning=FALSE}
+```{r regions, anchor = "Figure", results='asis', message=FALSE,warning=FALSE, fig.cap="Best Regions for the quality of coffee beans"}
 reg <- coffee_ratings %>% 
   group_by(country_of_origin,species,region,total_cup_points) %>% 
   summarise(sum = sum(total_cup_points)) %>% 
@@ -296,6 +295,7 @@ ggplot(reg,
         aes(x = reorder(region, -total_cup_points),
             y = total_cup_points,
             fill = country_of_origin)) + 
+  xlab("Region")+
 geom_col()
 ```
 
@@ -303,14 +303,14 @@ geom_col()
 
 We also observe that Colombia is the largest producer of coffee beans Arabica variant with more than 40000 bags followed by Guatemala and Brazil. We establish using a bar-plot in `r figr("producer",TRUE,type = "Figure")` with y-axis representing the number of bags produced and x-axis representing different countries. The Figure shows the top-6 coffee bean producing countries.
 
-```{r producer, anchor = "Figure", results='asis', message=FALSE, warning=FALSE}
+```{r producer, anchor = "Figure", results='asis', message=FALSE, warning=FALSE, fig.cap="Largest producer country-wise"}
 highest_produce <- coffee_ratings %>% group_by(country_of_origin,species) %>% summarise(nob = sum(number_of_bags)) %>% arrange(desc(nob)) %>% head()
 
 ggplot(highest_produce, 
        aes(x = reorder(country_of_origin, - nob), 
            y = nob)) + 
   geom_col(fill = "deepskyblue4") +
-  labs(x = "country", y = "number of bags produced") +
+  labs(x = "Country", y = "Number of bags produced") +
   geom_text(label =  highest_produce$species)
 ```
 
@@ -323,3 +323,5 @@ ggplot(highest_produce,
 - Cerda, R., Allinne, C., Gary, C., Tixier, P., Harvey, C. A., Krolczyk, L., ... & Avelino, J. (2017). Effects of shade, altitude and management on multiple ecosystem services in coffee agroecosystems. European Journal of Agronomy, 82, 308-319.
 
 - The data is in: Ethiopia has the best coffee. (2020). Retrieved 27 August 2020, from https://towardsdatascience.com/the-data-speak-ethiopia-has-the-best-coffee-91f88ed37e84
+
+- En.wikipedia.org. 2020. Coffee Bean. [online] Available at: <https://en.wikipedia.org/wiki/Coffee_bean> [Accessed 27 August 2020].
