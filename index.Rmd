@@ -87,6 +87,11 @@ QUestions :
 
 # Explatory Data Analysis
 
+Coffee beans are harvested, produced and exported throughout almost every country in the world. This dataset contains the data of ` r unique(coffee_ratings$country_of_origin)` leading manufactures of coffee. We will be focusing on the manufacturing and the quality aspect of the beans produced in this report. The two main variants of a coffee bean are Arabica and Robusta. Approximately 60% of coffee produced in the world is Arabica and approximately 40% is Robusta. Arabica beans consists about 0.8%-1.4% caffeine and Robusta beans  consists  of 1.7%-4% caffeine. Coffee is one of the most important cash crop in the world. [Wikipedia](https://en.wikipedia.org/wiki/Coffee_bean) 
+
+## Best Quality Beans
+
+So to address the primary question as **Which country produces best quality coffee beans?** as we can see in `r figr("best-country",TRUE,type = "Figure")` clearly most owners of top-20 best quality coffee beans produced are in Ethiopia followed by the United States. The **total_cup_points** is plotted on a pie-chart. The *total_cup_points** variable denotes the overall rating achieved by the coffee bean awarded by the Coffee Quality Institute's trained reviewers. This rating is a cumulative sum of 10 individual quality measures like aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. In the later section of this report we will also look at how the major countries perform individually on each of these criterias.
 ```{r best-country, anchor = "Figure", results='asis'}
 ## we;ll use the pie chart for this question i feel and a bar plot for the last one.
 coun <- coffee_ratings %>% 
