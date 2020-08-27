@@ -142,6 +142,12 @@ f <- broom::augment(factors)
 ggplot(f, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 ```
 
+# Radar Plot
+
+```{r}
+coffee_ratings %>% filter(country_of_origin== c("Ethiopia","United States","Brazil", "Peru", "Indonesia")) %>% 
+  select(aroma, flavor,aftertaste,acidity,body,balance,uniformity,clean_cup,sweetness,cupper_points, moisture, total_cup_points, country_of_origin) %>%  group_by(country_of_origin) %>% summarise(ma = mean(aroma), mfl= mean(flavor), maf = mean(aftertaste), mac = mean(acidity), mb = mean(body),mba = mean(balance),mu = mean(uniformity), mc = mean(clean_cup), ms = mean(sweetness), mcu = mean(cupper_points), mm = mean(moisture))
+```
 # References
 
 - The dataset was taken from (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-07/readme.md)
