@@ -49,6 +49,7 @@ Structure of data:
 library(tidyverse)
 library(kableExtra)
 library(fmsb)
+library(kfigr)
 ```
 
 After this knowing what each of those variables define with respect to our topic is important so here are a few variables we should know the general meaning to in accordance with coffee:
@@ -90,7 +91,7 @@ Coffee beans are harvested, produced and exported throughout almost every countr
 ## Best Quality Beans
 
 So to address the primary question as **Which country produces best quality coffee beans?** as we can see in `r figr("best-country",TRUE,type = "Figure")` clearly most owners of top-20 best quality coffee beans produced are in Ethiopia followed by the United States. The **total_cup_points** is plotted on a pie-chart. The *total_cup_points** variable denotes the overall rating achieved by the coffee bean awarded by the Coffee Quality Institute's trained reviewers. This rating is a cumulative sum of 10 individual quality measures like aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. In the later section of this report we will also look at how the major countries perform individually on each of these criterias.
-```{r best-country, anchor = "Figure", results='asis', fig.cap="Best country quality-wise"}
+```{r best-country, anchor = "Figure", results='asis', fig.cap="Best country quality-wise",echo=FALSE}
 coun <- coffee_ratings %>% 
   select(total_cup_points,species,country_of_origin,owner) %>% 
   group_by(country_of_origin) %>% 
@@ -110,17 +111,17 @@ ggplot(coun,
 
 Next, we will will probe into the next question **Does Altitude really affect the quality of the beans produced?** and to explore this we have fitted a linear model. **total_cup points** is the dependent variable and *altitude_mean_meters* as the independent variable. We have considered only the top 1105 observations for constructing the model because 3 extreme values and missing values were rendering a statistically insignificant model with a p-value of more than 0.9. The fitted model returns a p-value of 0.0003 which suggests that the model is statistically significant. `r figr("alt-plot",TRUE,type = "Figure")`  shows a positive relationship between altitude and quality of coffee beans produced. Altitude plays an important role in the formation of acidity and bitterness and enhances coffee quality attributes.
 
-```{r alt-lrm}
+```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE}
  lm(total_cup_points ~ altitude_mean_meters, coffee_ratings) %>%   broom::tidy() %>% kable(caption = "Altitude v/s Quality stats") %>% kable_styling()
 ```
 
-```{r alt-plot, anchor = "Figure", results='asis', fig.cap="Regression model for Altitude"}
+```{r alt-plot, anchor = "Figure", results='asis', fig.cap="Regression model for Altitude", echo=FALSE,warning=FALSE,message=FALSE}
 ggplot(data = coffee_ratings, aes(x = total_cup_points, y = altitude_mean_meters)) +
   geom_point() +
   geom_smooth(method = lm)
 ```
 
-```{r cor-test, eval=FALSE, warning=FALSE, message=FALSE}
+```{r cor-test, eval=FALSE, warning=FALSE, message=FALSE,echo=FALSE}
 res <- cor.test(coffee_ratings$total_cup_points, as.numeric(coffee_ratings$altitude)) %>% broom::tidy()
 res
 ```
@@ -130,12 +131,12 @@ res
 To check if the processing method affects the quality of coffee beans produced, we have taken help of the ANOVA test as the processing method is a categorical variable. The ANOVA test returns p-values very far away from the confidence interval of 5% which can be observed when we plot the residuals against the fitted values in `r figr("one-way",TRUE,type = "Figure")` . Hence it is established that the processing methods used in producing the coffee beans does not influence the quality of beans produced.
 
 
-```{r method-aov}
+```{r method-aov,echo=FALSE}
 one.way <- aov(total_cup_points ~ processing_method , data = coffee_ratings)
 summary(one.way) 
 ```
 
-```{r one-way,anchor = "Figure", results='asis',fig.cap="ANOVA test for processing methods vs Quality"}
+```{r one-way,anchor = "Figure", results='asis',fig.cap="ANOVA test for processing methods vs Quality",echo=FALSE}
 plot(one.way, which = 1, col = c("blue"))
 ```
 
@@ -143,12 +144,12 @@ plot(one.way, which = 1, col = c("blue"))
 
 After the linear model for altitude turned out to be insignificant, we figured there are several other variables in the dataset that we could try fitting a model. The dataset contains category one and category two defects which are also known as primary and secondary defects and we fitted a muti-variate model using the same. The model after considering both the variables return a p-value very close to 0 and hence this model is considered a good one and as can be seen in `r figr("def-plot",TRUE,type = "Figure")` which suggest that almost all the residuals reside very close to the 0 line with a very few outliers. Thus it can be understood that defects influence the quality of coffee beans produced.
 
-```{r def-lrm}
+```{r def-lrm, warning=FALSE,message=FALSE,echo=FALSE}
 defects <- lm(total_cup_points ~ category_one_defects + category_two_defects, coffee_ratings) 
-defects %>%  broom::tidy()
+defects %>%  broom::tidy() %>% kable(caption = "Defects linear regression model") %>% kable_styling()
 ```
 
-```{r def-plot, anchor = "Figure", results='asis'}
+```{r def-plot, anchor = "Figure", results='asis',echo=FALSE,warning=FALSE,message=FALSE}
 d <- defects %>% broom::augment()
 ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 ```
@@ -158,27 +159,27 @@ ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 
 Then we pondered that individual grading criterias should definetely have a positive relationship with the overall quality of the coffee beans and we fitted a multi-variate model with all the individual grading criterias. This turns out to be true as all the individual grading criterias have a p-value of 0 and have a direct impact on the overall quality of the beans produced. As is visible in `r figr("factor-plot",TRUE,type = "Figure")`  the residuals fitted against the fitted values lie very close to the 0 line and hence is the best amongst all the models checked. The characteristic *moisture* has a p-value of 0.980 which is a considerably high value than that of the significance level, hence we have decided to remove it from any further analysis.
 
-```{r factor-lrm}
+```{r factor-lrm, echo=FALSE}
 factors <- lm(total_cup_points ~ aroma + flavor + aftertaste + acidity + body + balance + uniformity + clean_cup + sweetness + cupper_points + moisture, coffee_ratings) 
 factors %>% broom::tidy() %>% kable(caption = "Individual Grading Summary Stats") %>% kable_styling()
 ```
 
-```{r factor-plot,anchor = "Figure", results='asis',fig.cap="fitted vs resid for Individual grading criteria"}
+```{r factor-plot,anchor = "Figure", results='asis',fig.cap="fitted vs resid for Individual grading criteria",echo=FALSE,warning=FALSE,message=FALSE}
 f <- broom::augment(factors)
 ggplot(f, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 ```
 
 ## Individual Criteria 
 
-To check which criteria the top 5 countries perform best in we have used radar charts from `r figr("Eth-radar",TRUE,type = "Figure")` - `r figr("indo-radar",TRUE,type = "Figure")`. A radar chart is a useful way to depict multi-variate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. The top-5 coffee bean producing countries according to our analysis are Ethiopia, Brazil, United States, Indonesia and Peru.
+To check which criteria the top 5 countries perform best in we have used radar charts from `r figr("Eth-radar",TRUE,type = "Figure")` onwards. A radar chart is a useful way to depict multi-variate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. The top-5 coffee bean producing countries according to our analysis are Ethiopia, Brazil, United States, Indonesia and Peru.
 
 
-```{r message=FALSE,warning=FALSE}
+```{r mean,message=FALSE,warning=FALSE,echo=FALSE}
 coffee_ratings %>% filter(country_of_origin== c("Ethiopia","United States","Brazil", "Peru", "Indonesia")) %>% 
   select(aroma, flavor,aftertaste,acidity,body,balance,uniformity,clean_cup,sweetness,cupper_points, moisture, total_cup_points, country_of_origin) %>%  group_by(country_of_origin) %>% summarise(ma = mean(aroma), mfl= mean(flavor), maf = mean(aftertaste), mac = mean(acidity), mb = mean(body),mba = mean(balance),mu = mean(uniformity), mc = mean(clean_cup), ms = mean(sweetness), mcu = mean(cupper_points), mm = mean(moisture)) %>% kable(caption = "Means for different Individual grading criterias") %>% kable_styling()
 ```
 
-```{r Eth-radar,anchor = "Figure", results='asis'}
+```{r Eth-radar,anchor = "Figure", results='asis',echo=FALSE}
 dataE <- data.frame(aroma = c(10,0,7.89),
                    flavor = c(10,0,8.00),
                    aftertaste = c(10,0,7.89),
@@ -197,7 +198,7 @@ Ethi <- radarchart(dataE,
            plwd = 2)
 ```
 
-```{r us-radar}
+```{r us-radar,echo=FALSE}
 dataU <- data.frame(aroma = c(10,0,7.79),
                    flavor = c(10,0,7.87),
                    aftertaste = c(10,0,7.67),
@@ -217,7 +218,7 @@ US <- radarchart(dataU,
 ```
 
 
-```{r brazil-radar}
+```{r brazil-radar,echo=FALSE}
 dataB <- data.frame(aroma = c(10,0,7.60),
                    flavor = c(10,0,7.54),
                    aftertaste = c(10,0,7.36),
@@ -237,7 +238,7 @@ Brazil <- radarchart(dataB,
 ```
 
 
-```{r peru-radar}
+```{r peru-radar,echo=FALSE}
 dataP <- data.frame(aroma = c(10,0,7.44),
                    flavor = c(10,0,7.33),
                    aftertaste = c(10,0,7.22),
@@ -257,7 +258,7 @@ Peru <- radarchart(dataP,
 ```
 
 
-```{r indo-radar,anchor = "Figure", results='asis'}
+```{r indo-radar,anchor = "Figure", results='asis',echo=FALSE}
 dataI <- data.frame(aroma = c(10,0,7.68),
                    flavor = c(10,0,7.41),
                    aftertaste = c(10,0,7.20),
@@ -284,7 +285,7 @@ After looking at these plots, the conclusion drawn are as follows: The common ch
 
 To respond to our final question **Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?** we use a barplot in `r figr("regions",TRUE,type = "Figure")`. The x-axis shows the total points a coffe bean recieves and the y-axis depicts the different regions where they were produced. The bars are coloured according to the country they belong to. Evidently Hulia is a region in Colombia where coffee beans get consistent good ratings and is the best region to grow coffee beans.
 
-```{r regions, anchor = "Figure", results='asis', message=FALSE,warning=FALSE, fig.cap="Best Regions for the quality of coffee beans"}
+```{r regions, anchor = "Figure", results='asis', message=FALSE,warning=FALSE, fig.cap="Best Regions for the quality of coffee beans",echo=FALSE}
 reg <- coffee_ratings %>% 
   group_by(country_of_origin,species,region,total_cup_points) %>% 
   summarise(sum = sum(total_cup_points)) %>% 
@@ -303,7 +304,7 @@ geom_col()
 
 We also observe that Colombia is the largest producer of coffee beans Arabica variant with more than 40000 bags followed by Guatemala and Brazil. We establish using a bar-plot in `r figr("producer",TRUE,type = "Figure")` with y-axis representing the number of bags produced and x-axis representing different countries. The Figure shows the top-6 coffee bean producing countries.
 
-```{r producer, anchor = "Figure", results='asis', message=FALSE, warning=FALSE, fig.cap="Largest producer country-wise"}
+```{r producer, anchor = "Figure", results='asis', message=FALSE, warning=FALSE, fig.cap="Largest producer country-wise",echo=FALSE}
 highest_produce <- coffee_ratings %>% group_by(country_of_origin,species) %>% summarise(nob = sum(number_of_bags)) %>% arrange(desc(nob)) %>% head()
 
 ggplot(highest_produce, 
