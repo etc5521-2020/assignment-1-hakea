@@ -82,12 +82,27 @@ QUestions :
 
 - Which countries perform best on individual grading criteria such as aroma, acidity, sweetness etc?
 
-- Which regions/companies perform better than others in the quality of the coffee beans produced,  intra-country?
+- Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?
 
 
-# Analysis and findings
+# Explatory Data Analysis
 
-[FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
+```{r best-country, anchor = "Figure", results='asis'}
+## we;ll use the pie chart for this question i feel and a bar plot for the last one.
+coun <- coffee_ratings %>% 
+  select(total_cup_points,species,country_of_origin,owner) %>% 
+  group_by(country_of_origin) %>% 
+  arrange(desc(total_cup_points)) %>% 
+  head(20)
+#alternative to the above bar plot for best quality country
+ggplot(coun, 
+       aes(x= "", 
+           y = total_cup_points, 
+           fill = country_of_origin)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start = 0) +
+  scale_fill_brewer("blues")
+```
 
 # References
 
