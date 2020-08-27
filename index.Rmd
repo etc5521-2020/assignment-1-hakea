@@ -109,6 +109,10 @@ ggplot(coun,
   scale_fill_brewer("blues")
 ```
 
+## Altitude v/s Quality (# Have to write on this part but will need your help.)
+
+Next, we will will probe into the next question **Does Altitude really affect the quality of the beans produced?** and to explore this we have fitted a linear model. **total_cup points** is the dependent variable and *altitude_mean_meters* as the independent variable. The fitted model returns a p-value of 0.646 and inspite a subtle upward slope being noticed the model cannot be considered statistically significant and this can be observed in figure . This can be explained due to the available data being of the best coffee beans produced around the world and most of the data has higher total_cup_points.
+
 ```{r}
  lm(total_cup_points ~ altitude_mean_meters, coffee_ratings) %>%   broom::tidy()
 ```
