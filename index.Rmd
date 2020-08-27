@@ -259,6 +259,20 @@ Indo <- radarchart(data,
            plwd = 2)
 ```
 
+
+```{r regions, message=FALSE,warning=FALSE}
+reg <- coffee_ratings %>% 
+  group_by(country_of_origin,species,region,total_cup_points) %>% 
+  summarise(sum = sum(total_cup_points)) %>% 
+  arrange(desc(sum)) %>% 
+  head(40)
+
+ggplot(reg,
+        aes(x = reorder(region, -total_cup_points),
+            y = total_cup_points,
+            fill = country_of_origin)) + 
+geom_col()
+```
 # References
 
 - The dataset was taken from (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-07/readme.md)
