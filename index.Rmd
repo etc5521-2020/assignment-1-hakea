@@ -265,6 +265,9 @@ Indo <- radarchart(data,
            plwd = 2)
 ```
 
+## Leading Regions
+
+To respond to our final question **Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?** we use a barplot in figure 9. The x-axis shows the total points a coffe bean recieves and the y-axis depicts the different regions where they were produced. The bars are coloured according to the country they belong to. Evidently Hulia is a region in Colombia where coffee beans get consistent good ratings and is the best region to grow coffee beans.
 
 ```{r regions, message=FALSE,warning=FALSE}
 reg <- coffee_ratings %>% 
@@ -279,6 +282,10 @@ ggplot(reg,
             fill = country_of_origin)) + 
 geom_col()
 ```
+
+## Largest Producer
+
+We also observe that Colombia is the largest producer of coffee beans Arabica variant with more than 40000 bags followed by Guatemala and Brazil. We establish using a bar-plot in figure 4 with y-axis representing the number of bags produced and x-axis representing different countries. The Figure shows the top-6 coffee bean producing countries.
 
 ```{r}
 # highest producer using bags
