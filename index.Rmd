@@ -137,6 +137,19 @@ summary(one.way)
 plot(one.way, which = 1, col = c("blue"))
 ```
 
+## Defects v/s Quality
+
+After the linear model for altitude turned out to be insignificant, we figured there are several other variables in the dataset that we could try fitting a model. The dataset contains category one and category two defects which are also known as primary and secondary defects and we fitted a muti-variate model using the same. The model after considering both the variables return a p-value very close to 0 and hence this model is considered a good one and as can be seen in figure which suggest that almost all the residuals reside very close to the 0 line with a very few outliers. Thus it can be understood that defects influence the quality of coffee beans produced.
+```{r}
+defects <- lm(total_cup_points ~ category_one_defects + category_two_defects, coffee_ratings) 
+defects %>%  broom::tidy()
+```
+
+```{r}
+d <- defects %>% broom::augment()
+ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
+```
+
 
 ```{r}
 factors <- lm(total_cup_points ~ aroma + flavor + aftertaste + acidity + body + balance + uniformity + clean_cup + sweetness + cupper_points + moisture, coffee_ratings) 
