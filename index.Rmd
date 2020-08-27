@@ -104,6 +104,23 @@ ggplot(coun,
   scale_fill_brewer("blues")
 ```
 
+```{r}
+ lm(total_cup_points ~ altitude, coffee_ratings) %>%   broom::tidy()
+```
+
+```{r}
+one.way <- aov(total_cup_points ~ altitude , data = coffee_ratings)
+summary(one.way) 
+```
+
+```{r}
+plot(one.way, which = 1, col = c("blue"))
+```
+
+```{r warning=FALSE, message=FALSE}
+res <- cor.test(coffee_ratings$total_cup_points, as.numeric(coffee_ratings$altitude)) %>% broom::tidy()
+res
+```
 # References
 
 - The dataset was taken from (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-07/readme.md)
