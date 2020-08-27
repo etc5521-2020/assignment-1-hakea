@@ -150,6 +150,9 @@ d <- defects %>% broom::augment()
 ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 ```
 
+## Processing Method v/s Quality
+
+To check if the processing method affects the quality of coffee beans produced, we have taken help of the ANOVA test as the processing method is a categorical variable. The ANOVA test returns p-values very far away from the confidence interval of 5% which can be observed when we plot the residuals against the fitted values in figure . Hence it is established that the processing methods used in producing the coffee beans does not influence the quality of beans produced.
 
 ```{r}
 factors <- lm(total_cup_points ~ aroma + flavor + aftertaste + acidity + body + balance + uniformity + clean_cup + sweetness + cupper_points + moisture, coffee_ratings) 
