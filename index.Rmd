@@ -148,6 +148,117 @@ ggplot(f, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 coffee_ratings %>% filter(country_of_origin== c("Ethiopia","United States","Brazil", "Peru", "Indonesia")) %>% 
   select(aroma, flavor,aftertaste,acidity,body,balance,uniformity,clean_cup,sweetness,cupper_points, moisture, total_cup_points, country_of_origin) %>%  group_by(country_of_origin) %>% summarise(ma = mean(aroma), mfl= mean(flavor), maf = mean(aftertaste), mac = mean(acidity), mb = mean(body),mba = mean(balance),mu = mean(uniformity), mc = mean(clean_cup), ms = mean(sweetness), mcu = mean(cupper_points), mm = mean(moisture))
 ```
+
+```{r}
+library(fmsb)
+data <- data.frame(aroma = c(10,0,7.89),
+                   flavor = c(10,0,8.00),
+                   aftertaste = c(10,0,7.89),
+                   acidity = c(10,0,8.04),
+                   body = c(10,0,7.92),
+                   balance = c(10,0,7.97),
+                   uniformtiy = c(10,0,9.87),
+                   clean_cup = c(10,0,9.95),
+                   sweetness = c(10,0,9.86),
+                   cupper_points = c(10,0,8.04),
+                   moisture = c(10,0,0.08))
+
+Ethi <-radarchart(data, 
+           seg = 10,
+           title = "Ethiopia",
+           pfcol = scales::alpha("purple", 0.3),
+           plwd = 2)
+```
+
+```{r}
+library(fmsb)
+data <- data.frame(aroma = c(10,0,7.60),
+                   flavor = c(10,0,7.54),
+                   aftertaste = c(10,0,7.36),
+                   acidity = c(10,0,7.46),
+                   body = c(10,0,7.53),
+                   balance = c(10,0,7.54),
+                   uniformtiy = c(10,0,9.75),
+                   clean_cup = c(10,0,9.69),
+                   sweetness = c(10,0,9.93),
+                   cupper_points = c(10,0,7.49),
+                   moisture = c(10,0,0.08))
+
+Brazil <- radarchart(data, 
+           seg = 10,
+           title = "Brazil",
+           pfcol = scales::alpha("pink", 0.3),
+           plwd = 2) 
+```
+
+
+```{r}
+library(fmsb)
+data <- data.frame(aroma = c(10,0,7.79),
+                   flavor = c(10,0,7.87),
+                   aftertaste = c(10,0,7.67),
+                   acidity = c(10,0,7.87),
+                   body = c(10,0,7.79),
+                   balance = c(10,0,7.67),
+                   uniformtiy = c(10,0,9.66),
+                   clean_cup = c(10,0,9.66),
+                   sweetness = c(10,0,8.71),
+                   cupper_points = c(10,0,7.83),
+                   moisture = c(10,0,0.00))
+
+US <- radarchart(data, 
+           seg = 10,
+           title = "United States",
+           pfcol = scales::alpha("skyblue", 0.3),
+           plwd = 2) 
+```
+
+
+```{r}
+library(fmsb)
+data <- data.frame(aroma = c(10,0,7.44),
+                   flavor = c(10,0,7.33),
+                   aftertaste = c(10,0,7.22),
+                   acidity = c(10,0,7.38),
+                   body = c(10,0,7.53),
+                   balance = c(10,0,7.44),
+                   uniformtiy = c(10,0,9.77),
+                   clean_cup = c(10,0,10.00),
+                   sweetness = c(10,0,10.00),
+                   cupper_points = c(10,0,8.14),
+                   moisture = c(10,0,0.08))
+
+Peru <- radarchart(data, 
+           seg = 10,
+           title = "Peru",
+           pfcol = scales::alpha("tomato", 0.3),
+           plwd = 2) 
+```
+
+
+```{r}
+library(fmsb)
+#library(ggradar)
+dataI <- data.frame(aroma = c(10,0,7.68),
+                   flavor = c(10,0,7.41),
+                   aftertaste = c(10,0,7.20),
+                   acidity = c(10,0,7.21),
+                   body = c(10,0,7.60),
+                   balance = c(10,0,7.23),
+                   uniformtiy = c(10,0,9.86),
+                   clean_cup = c(10,0,10.00),
+                   sweetness = c(10,0,9.86),
+                   cupper_points = c(10,0,7.26),
+                   moisture = c(10,0,0.07))
+
+
+Indo <- radarchart(data,
+           seg = 10,
+           title = "Indonesia",
+           pfcol = scales::alpha("gold", 0.3),
+           plwd = 2)
+```
+
 # References
 
 - The dataset was taken from (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-07/readme.md)
