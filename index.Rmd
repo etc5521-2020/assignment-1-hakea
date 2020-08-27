@@ -120,12 +120,12 @@ res
 ```
 
 ```{r}
-method <- lm(total_cup_points ~ processing_method, coffee_ratings) 
-method %>%  broom::tidy()
+one.way <- aov(total_cup_points ~ processing_method , data = coffee_ratings)
+summary(one.way) 
 ```
+
 ```{r}
-m <- method %>% broom::augment()
-ggplot(method, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth(se = TRUE)
+plot(one.way, which = 1, col = c("blue"))
 ```
 
 
