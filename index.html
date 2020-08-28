@@ -432,7 +432,6 @@ Best country quality-wise
 <div id="altitude-vs-quality" class="section level2">
 <h2>Altitude v/s Quality</h2>
 <p>Next, we will will probe into the next question <strong>Does Altitude really affect the quality of the beans produced?</strong> and to explore this we have fitted a linear model. <strong>total_cup points</strong> is the dependent variable and <strong>altitude_mean_meters</strong> as the independent variable. We have considered only the top 1105 observations for constructing the model because 3 extreme values and missing values were rendering a statistically insignificant model with a p-value of more than 0.9. The fitted model returns a p-value of 0.0003 which suggests that the model is statistically significant. <a href="#alt-plot">Figure 2</a> shows a positive relationship between altitude and quality of coffee beans produced. Altitude plays an important role in the formation of acidity and bitterness and enhances coffee quality attributes.</p>
-<pre class="r"><code>alt_data &lt;- coffee_ratings %&gt;% arrange(altitude_mean_meters) %&gt;% head(1105)</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 Altitude v/s Quality stats

@@ -41,6 +41,12 @@ tuesdata <- tidytuesdayR::tt_load('2020-07-07')
 tuesdata <- tidytuesdayR::tt_load(2020, week = 28)
 
 coffee_ratings <- tuesdata$coffee_ratings
+
+```
+
+```{r alternative, eval=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
+# If the above code renders an error, alternatively this chunk can be used to read the data!
+coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv')
 ```
 
 **Structure of data:** 
@@ -111,7 +117,7 @@ ggplot(coun,
 
 Next, we will will probe into the next question **Does Altitude really affect the quality of the beans produced?** and to explore this we have fitted a linear model. **total_cup points** is the dependent variable and **altitude_mean_meters** as the independent variable. We have considered only the top 1105 observations for constructing the model because 3 extreme values and missing values were rendering a statistically insignificant model with a p-value of more than 0.9. The fitted model returns a p-value of 0.0003 which suggests that the model is statistically significant. `r figr("alt-plot",TRUE,type = "Figure")`  shows a positive relationship between altitude and quality of coffee beans produced. Altitude plays an important role in the formation of acidity and bitterness and enhances coffee quality attributes.
 
-```{r}
+```{r altitude, echo=FALSE}
 alt_data <- coffee_ratings %>% arrange(altitude_mean_meters) %>% head(1105)
 
 ```
