@@ -111,12 +111,17 @@ ggplot(coun,
 
 Next, we will will probe into the next question **Does Altitude really affect the quality of the beans produced?** and to explore this we have fitted a linear model. **total_cup points** is the dependent variable and **altitude_mean_meters** as the independent variable. We have considered only the top 1105 observations for constructing the model because 3 extreme values and missing values were rendering a statistically insignificant model with a p-value of more than 0.9. The fitted model returns a p-value of 0.0003 which suggests that the model is statistically significant. `r figr("alt-plot",TRUE,type = "Figure")`  shows a positive relationship between altitude and quality of coffee beans produced. Altitude plays an important role in the formation of acidity and bitterness and enhances coffee quality attributes.
 
+```{r}
+alt_data <- coffee_ratings %>% arrange(altitude_mean_meters) %>% head(1105)
+
+```
+
 ```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE}
- lm(total_cup_points ~ altitude_mean_meters, coffee_ratings) %>%   broom::tidy() %>% kable(caption = "Altitude v/s Quality stats") %>% kable_styling()
+ lm(total_cup_points ~ altitude_mean_meters, alt_data) %>%   broom::tidy() %>% kable(caption = "Altitude v/s Quality stats") %>% kable_styling()
 ```
 
 ```{r alt-plot, anchor = "Figure", results='asis', fig.cap="Regression model for Altitude", echo=FALSE,warning=FALSE,message=FALSE}
-ggplot(data = coffee_ratings, aes(x = total_cup_points, y = altitude_mean_meters)) +
+ggplot(data = alt_data, aes(x = total_cup_points, y = altitude_mean_meters)) +
   geom_point() +
   geom_smooth(method = lm)
 ```
