@@ -31,7 +31,7 @@ So wouldn't it be interesting to know how the coffee you drink is graded to be e
 The original data is a dataframe was scraped by James LeDoux from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the dataset by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc.
 
 
-Since both these datasets are just two different species of coffee , they were joined to produce the dataset which we now use “coffee_ratings.csv” with 1339 observations and 43 variables. 
+Since both the datasets (Arabica and Robusta) are just two different species of coffee , they were joined to produce the dataset, which we now use “coffee_ratings.csv” with 1339 observations and 43 variables. 
 
 ```{r data, message=FALSE, warning=FALSE,include=FALSE}
 # Read in with tidytuesdayR package 
@@ -43,9 +43,9 @@ tuesdata <- tidytuesdayR::tt_load(2020, week = 28)
 coffee_ratings <- tuesdata$coffee_ratings
 ```
 
-Structure of data: 
+**Structure of data:** 
 
-```{r libraries, message=FALSE, warning=FALSE}
+```{r libraries, message=FALSE, warning=FALSE,echo=FALSE}
 library(tidyverse)
 library(kableExtra)
 library(fmsb)
@@ -54,26 +54,26 @@ library(kfigr)
 
 After this knowing what each of those variables define with respect to our topic is important so here are a few variables we should know the general meaning to in accordance with coffee:
 
-- Aroma(aroma grade) : Has both fragrance(ground beans) and aroma (hot water with coffee powder) 
+- *Aroma(aroma grade)* : Has both fragrance(ground beans) and aroma (hot water with coffee powder) 
 
-- Aftertaste : length of positive flavor remaining after the coffee is swallowed.
+- *Aftertaste* : length of positive flavor remaining after the coffee is swallowed.
 
-- Acidity : the score depends on the origin characteristics and other factors(degree of roast)
+- *Acidity* : the score depends on the origin characteristics and other factors(degree of roast)
 
-- Uniformity : refers to the consistency of flavor . 2 points are awarded for each cup displaying this attribute, with a maximum of 10 points if all 5 cups are the same.
+- *Uniformity* : refers to the consistency of flavor . 2 points are awarded for each cup displaying this attribute, with a maximum of 10 points if all 5 cups are the same.
 
-- Clean_cup : refers to a lack of interfering negative impressions from first ingestion to final aftertaste, a "transparency" of cup.  2 points are awarded for each cup displaying the attribute.
+- *Clean_cup* : refers to a lack of interfering negative impressions from first ingestion to final aftertaste, a "transparency" of cup.  2 points are awarded for each cup displaying the attribute.
 
-- Cupper_points : The cupper marks the intensity of the Aroma on a scale. A final score for Fragrance and Aroma is now given on the basis of a combined evaluation of Fragrance and Aroma.
+- *Cupper-points* : The cupper marks the intensity of the Aroma on a scale. A final score for Fragrance and Aroma is now given on the basis of a combined evaluation of Fragrance and Aroma.
 
-- Category 1 defect: Full black or sour bean, pod/cherry, and large or medium sticks or stones.
+- *Category 1 defect*: Full black or sour bean, pod/cherry, and large or medium sticks or stones.
 
 
-- Category 2 defect: Parchment, hull/husk, broken/chipped, insect damage, partial black or sour, shell, small sticks or stones, water damage.
+- *Category 2 defect*: Parchment, hull/husk, broken/chipped, insect damage, partial black or sour, shell, small sticks or stones, water damage.
 
-- Quakers: Quakers are unripened beans that are hard to identify during hand sorting and green bean inspection.
+- *Quakers*: Quakers are unripened beans that are hard to identify during hand sorting and green bean inspection.
 
-**Questions** :
+**Questions:**
 
 - Which Country produces the best quality coffee beans?
 
@@ -86,11 +86,11 @@ After this knowing what each of those variables define with respect to our topic
 
 # Explatory Data Analysis
 
-Coffee beans are harvested, produced and exported throughout almost every country in the world. This dataset contains the data of ` r unique(coffee_ratings$country_of_origin)` leading manufactures of coffee. We will be focusing on the manufacturing and the quality aspect of the beans produced in this report. The two main variants of a coffee bean are Arabica and Robusta. Approximately 60% of coffee produced in the world is Arabica and approximately 40% is Robusta. Arabica beans consists about 0.8%-1.4% caffeine and Robusta beans  consists  of 1.7%-4% caffeine. Coffee is one of the most important cash crop in the world. [Wikipedia](https://en.wikipedia.org/wiki/Coffee_bean) 
+Coffee beans are harvested, produced and exported throughout almost every country in the world. This dataset contains the data of `r unique(coffee_ratings$country_of_origin)`. We will be focusing on the manufacturing and the quality aspect of the beans produced in this report. The two main variants of a coffee bean are Arabica and Robusta. Approximately 60% of coffee produced in the world is Arabica and approximately 40% is Robusta. Arabica beans consists about 0.8%-1.4% caffeine and Robusta beans  consists  of 1.7%-4% caffeine. Coffee is one of the most important cash crop in the world. [Wikipedia](https://en.wikipedia.org/wiki/Coffee_bean) 
 
 ## Best Quality Beans
 
-So to address the primary question as **Which country produces best quality coffee beans?** as we can see in `r figr("best-country",TRUE,type = "Figure")` clearly most owners of top-20 best quality coffee beans produced are in Ethiopia followed by the United States. The **total_cup_points** is plotted on a pie-chart. The *total_cup_points** variable denotes the overall rating achieved by the coffee bean awarded by the Coffee Quality Institute's trained reviewers. This rating is a cumulative sum of 10 individual quality measures like aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. In the later section of this report we will also look at how the major countries perform individually on each of these criterias.
+So to address the primary question as **Which country produces best quality coffee beans?** as we can see in `r figr("best-country",TRUE,type = "Figure")` clearly most owners of top-20 best quality coffee beans produced are in Ethiopia followed by the United States. The **total_cup_points** is plotted on a pie-chart. The *total_cup_points* variable denotes the overall rating achieved by the coffee bean awarded by the Coffee Quality Institute's trained reviewers. This rating is a cumulative sum of 10 individual quality measures like aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. In the later section of this report we will also look at how the major countries perform individually on each of these criterias.
 ```{r best-country, anchor = "Figure", results='asis', fig.cap="Best country quality-wise",echo=FALSE}
 coun <- coffee_ratings %>% 
   select(total_cup_points,species,country_of_origin,owner) %>% 
@@ -109,7 +109,7 @@ ggplot(coun,
 
 ## Altitude v/s Quality 
 
-Next, we will will probe into the next question **Does Altitude really affect the quality of the beans produced?** and to explore this we have fitted a linear model. **total_cup points** is the dependent variable and *altitude_mean_meters* as the independent variable. We have considered only the top 1105 observations for constructing the model because 3 extreme values and missing values were rendering a statistically insignificant model with a p-value of more than 0.9. The fitted model returns a p-value of 0.0003 which suggests that the model is statistically significant. `r figr("alt-plot",TRUE,type = "Figure")`  shows a positive relationship between altitude and quality of coffee beans produced. Altitude plays an important role in the formation of acidity and bitterness and enhances coffee quality attributes.
+Next, we will will probe into the next question **Does Altitude really affect the quality of the beans produced?** and to explore this we have fitted a linear model. **total_cup points** is the dependent variable and **altitude_mean_meters** as the independent variable. We have considered only the top 1105 observations for constructing the model because 3 extreme values and missing values were rendering a statistically insignificant model with a p-value of more than 0.9. The fitted model returns a p-value of 0.0003 which suggests that the model is statistically significant. `r figr("alt-plot",TRUE,type = "Figure")`  shows a positive relationship between altitude and quality of coffee beans produced. Altitude plays an important role in the formation of acidity and bitterness and enhances coffee quality attributes.
 
 ```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE}
  lm(total_cup_points ~ altitude_mean_meters, coffee_ratings) %>%   broom::tidy() %>% kable(caption = "Altitude v/s Quality stats") %>% kable_styling()
@@ -122,6 +122,7 @@ ggplot(data = coffee_ratings, aes(x = total_cup_points, y = altitude_mean_meters
 ```
 
 ```{r cor-test, eval=FALSE, warning=FALSE, message=FALSE,echo=FALSE}
+#alternate verification for altitude
 res <- cor.test(coffee_ratings$total_cup_points, as.numeric(coffee_ratings$altitude)) %>% broom::tidy()
 res
 ```
@@ -155,7 +156,7 @@ ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 ```
 
 
-## Individual Criteria v/s Overall Quality (# Maybe remove moisture from this model?)
+## Individual Criteria v/s Overall Quality 
 
 Then we pondered that individual grading criterias should definetely have a positive relationship with the overall quality of the coffee beans and we fitted a multi-variate model with all the individual grading criterias. This turns out to be true as all the individual grading criterias have a p-value of 0 and have a direct impact on the overall quality of the beans produced. As is visible in `r figr("factor-plot",TRUE,type = "Figure")`  the residuals fitted against the fitted values lie very close to the 0 line and hence is the best amongst all the models checked. The characteristic *moisture* has a p-value of 0.980 which is a considerably high value than that of the significance level, hence we have decided to remove it from any further analysis.
 
