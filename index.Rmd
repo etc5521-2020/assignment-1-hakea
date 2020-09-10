@@ -5,6 +5,8 @@ team: Hakea
 author:
   - Siddhant V Tirodkar
   - Varsha Ujjinni Vijay Kumar
+  - Dang Thanh Nguyen
+  - Rui Min Lin
 date: "`r Sys.Date()`"
 output: 
   html_document

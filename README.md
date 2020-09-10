@@ -1,11 +1,13 @@
 # ETC5521 Assignment 1 
 
-Team name: [FILL]
+Team name: Hakea
 
 Team members:
 
-* [FILL]
-* [FILL]
+* Siddhant V Tirodkar
+* Varsha Ujjinni Vijay Kumar
+* Dang Thanh Nguyen
+* Rui Min Lin
 
 # Steps
 
