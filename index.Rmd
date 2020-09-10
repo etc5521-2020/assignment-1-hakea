@@ -58,6 +58,7 @@ library(tidyverse)
 library(kableExtra)
 library(fmsb)
 library(kfigr)
+library(gridExtra)
 ```
 
 After this knowing what each of those variables define with respect to our topic is important so here are a few variables we should know the general meaning to in accordance with coffee:
@@ -168,21 +169,6 @@ d <- defects %>% broom::augment()
 ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 ```
 
-
-## Individual Criteria v/s Overall Quality 
-
-Then we pondered that individual grading criterias should definetely have a positive relationship with the overall quality of the coffee beans and we fitted a multi-variate model with all the individual grading criterias. This turns out to be true as all the individual grading criterias have a p-value of 0 and have a direct impact on the overall quality of the beans produced. As is visible in `r figr("factor-plot",TRUE,type = "Figure")`  the residuals fitted against the fitted values lie very close to the 0 line and hence is the best amongst all the models checked. The characteristic *moisture* has a p-value of 0.980 which is a considerably high value than that of the significance level, hence we have decided to remove it from any further analysis.
-
-```{r factor-lrm, echo=FALSE}
-factors <- lm(total_cup_points ~ aroma + flavor + aftertaste + acidity + body + balance + uniformity + clean_cup + sweetness + cupper_points + moisture, coffee_ratings) 
-factors %>% broom::tidy() %>% kable(caption = "Individual Grading Summary Stats") %>% kable_styling()
-```
-
-```{r factor-plot,anchor = "Figure", results='asis',fig.cap="fitted vs resid for Individual grading criteria",echo=FALSE,warning=FALSE,message=FALSE}
-f <- broom::augment(factors)
-ggplot(f, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
-```
-
 ## Individual Criteria 
 
 To check which criteria the top 5 countries perform best in we have used radar charts from `r figr("Eth-radar",TRUE,type = "Figure")` onwards. A radar chart is a useful way to depict multi-variate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. The top-5 coffee bean producing countries according to our analysis are Ethiopia, Brazil, United States, Indonesia and Peru.
@@ -290,6 +276,10 @@ Indo <- radarchart(dataI,
            title = "Indonesia",
            pfcol = scales::alpha("gold", 0.3),
            plwd = 2)
+```
+
+```{r merged}
+grid.arrange(Ehi, US, Brazil, Peru, Indo, ncol = 2)
 ```
 
 After looking at these plots, the conclusion drawn are as follows: The common characteristics that these top 5 countries have are the consistent higher values of *uniformity* and *clean cup*. Among all these countries, it can be seen that the country **Ethiopia** has the highest values for all the different characteristics that we have proven to have a significant affect on the quality of the coffee beans in the above sections. It is also interesting how the *sweetness* has a perfect score of 10 in all other countries other than *United States* as depicted.
