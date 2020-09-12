@@ -35,11 +35,11 @@ So wouldn't it be interesting to know how the coffee you drink is graded to be e
 
 *Source of data* : This data originally comes from Coffee Quality Institute website and was scraped by and used by  a github account by  [James DeLoux](https://github.com/jldbc/coffee-quality-database) ,this data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv) . And this dataset was analysed by [Yorgos Askalidis](https://towardsdatascience.com/the-data-speak-ethiopia-has-the-best-coffee-91f88ed37e84).
 
-*Collection Methods*: This dataset contains the review of 1312 arabica 28 robusta beans from the Coffee Quality Institute’s trained reviewers. 
+*Collection Methods*: This dataset contains the review of 1312 arabica and 28 robusta beans from the Coffee Quality Institute’s trained reviewers. 
 
-*Time Frame of dataset*: January 2018
+*Time Frame of dataset*: January, 2018
 
-The original data is a dataframe was scraped by James LeDoux from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the dataset by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc.
+The original data is a dataframe scraped by James LeDoux from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the dataset by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc.
 
 
 Since both the datasets (Arabica and Robusta) are just two different species of coffee , they were joined to produce the dataset, which we now use “coffee_ratings.csv” with 1339 observations and 43 variables. 
@@ -163,9 +163,18 @@ ggplot(coun,
 ```
 
 
-```{r q1}
-
-
+```{r q1, results='asis', fig.cap="Best country quality-wise"}
+# Get countries that have more then 5 beans graded
+temp <- coffee_clean %>% group_by(country) %>%
+  summarise(count = n()) %>% 
+  filter(count > 5) %>% 
+  ungroup() %>% 
+  pull(country) # Get the country name out as vector)
+coffee_clean %>% filter (country %in% temp) %>%
+mutate(country = fct_reorder(country, total_points)) %>% 
+ggplot(aes(x = total_points,
+           y = country))+
+  geom_boxplot()
 ```
 ## Altitude v/s Quality 
 
