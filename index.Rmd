@@ -75,7 +75,6 @@ coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatasci
 
 ```{r data-clean}
 # Tidy the name a bit
-coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv')
 
 coffee_ratings_clean <- coffee_ratings %>% 
   # Shorten the variables name
@@ -94,7 +93,6 @@ ggplot(coffee_clean, aes(total_points, country))+
   geom_point()
 # There is an outlier in total cup points
 
-coffee_clean <- coffee_ratings_clean %>% filter(total_points >40)
 
 # There is a NA in country name
 # I (Thomas) performed a quick check, and it is from colombia (based on the producer)
@@ -146,22 +144,6 @@ Coffee beans are harvested, produced and exported throughout almost every countr
 ## Best Quality Beans
 
 So to address the primary question as **Which country produces best quality coffee beans?** as we can see in `r figr("best-country",TRUE,type = "Figure")` clearly most owners of top-20 best quality coffee beans produced are in Ethiopia followed by the United States. The **total_cup_points** is plotted on a pie-chart. The *total_cup_points* variable denotes the overall rating achieved by the coffee bean awarded by the Coffee Quality Institute's trained reviewers. This rating is a cumulative sum of 10 individual quality measures like aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. In the later section of this report we will also look at how the major countries perform individually on each of these criterias.
-```{r best-country-old, anchor = "Figure", results='asis', fig.cap="Best country quality-wise",eval = FALSE}
-coun <- coffee_ratings %>% 
-  select(total_cup_points,species,country_of_origin,owner) %>% 
-  group_by(country_of_origin) %>% 
-  arrange(desc(total_cup_points)) %>% 
-  head(20)
-
-ggplot(coun, 
-       aes(x= "", 
-           y = total_cup_points, 
-           fill = country_of_origin)) +
-  geom_bar(width = 1, stat = "identity") +
-  coord_polar("y", start = 0) +
-  scale_fill_brewer("blues")
-```
-
 
 ```{r q1, results='asis', fig.cap="Best country quality-wise"}
 # Get countries that have more then 5 beans graded
