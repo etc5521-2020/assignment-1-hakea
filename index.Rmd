@@ -1,15 +1,24 @@
 ---
-title: "ETC5521 Assignment 1"
+title: "ETC5521 Assignment 2"
 subtitle: "All about Coffee"
 team: Hakea
 author:
-  - Siddhant V Tirodkar
-  - Varsha Ujjinni Vijay Kumar
   - Dang Thanh Nguyen
   - Rui Min Lin
 date: "`r Sys.Date()`"
 output: 
-  html_document
+  bookdown::html_document2: 
+    citation_package: biblatex
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_float:
+      collapsed: yes
+bibliography: ref.bib
+biblio-style: authoryear-comp
+link-citations: yes
+   
+
 ---
 
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
@@ -35,6 +44,19 @@ The original data is a dataframe was scraped by James LeDoux from the Coffee Qua
 
 Since both the datasets (Arabica and Robusta) are just two different species of coffee , they were joined to produce the dataset, which we now use “coffee_ratings.csv” with 1339 observations and 43 variables. 
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(kableExtra)
+library(fmsb)
+library(kfigr)
+library(gridExtra)
+library(bookdown)
+```
+
+
+
+
 ```{r data, message=FALSE, warning=FALSE,include=FALSE}
 # Read in with tidytuesdayR package 
 # Install from CRAN via: install.packages("tidytuesdayR")
@@ -51,19 +73,44 @@ coffee_ratings <- tuesdata$coffee_ratings
 coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv')
 ```
 
-**Structure of data:** 
+```{r data-clean}
+# Tidy the name a bit
+coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv')
 
-```{r libraries, message=FALSE, warning=FALSE,echo=FALSE}
-library(tidyverse)
-library(kableExtra)
-library(fmsb)
-library(kfigr)
-library(gridExtra)
+coffee_ratings_clean <- coffee_ratings %>% 
+  # Shorten the variables name
+  rename(country = country_of_origin,
+         total_points = total_cup_points,
+         method = processing_method) %>%
+  mutate(country = if_else(country == "Tanzania, United Republic Of", "Tanzania", country)) %>%
+  # Shorten the name of obs
+  mutate(country = recode(country, 
+                          "United States" = "US",
+                          "United States (Hawaii)" = "US (Hawaii)",
+                          "United States (Puerto Rico)" = "US (Puerto Rico)"
+                          ))
+
+ggplot(coffee_clean, aes(total_points, country))+
+  geom_point()
+# There is an outlier in total cup points
+
+coffee_clean <- coffee_ratings_clean %>% filter(total_points >40)
+
+# There is a NA in country name
+# I (Thomas) performed a quick check, and it is from colombia (based on the producer)
+# So I changed it
+
+coffee_clean <- coffee_clean %>%
+  mutate(country = replace(country, is.na(country), "Colombia"))
+
 ```
+
+
+**Structure of data:** 
 
 After this knowing what each of those variables define with respect to our topic is important so here are a few variables we should know the general meaning to in accordance with coffee:
 
-- *Aroma(aroma grade)* : Has both fragrance(ground beans) and aroma (hot water with coffee powder) 
+- *Aroma(aroma grade)* : Has both fragrance (ground beans) and aroma (hot water with coffee powder) 
 
 - *Aftertaste* : length of positive flavor remaining after the coffee is swallowed.
 
@@ -76,7 +123,6 @@ After this knowing what each of those variables define with respect to our topic
 - *Cupper-points* : The cupper marks the intensity of the Aroma on a scale. A final score for Fragrance and Aroma is now given on the basis of a combined evaluation of Fragrance and Aroma.
 
 - *Category 1 defect*: Full black or sour bean, pod/cherry, and large or medium sticks or stones.
-
 
 - *Category 2 defect*: Parchment, hull/husk, broken/chipped, insect damage, partial black or sour, shell, small sticks or stones, water damage.
 
@@ -100,7 +146,7 @@ Coffee beans are harvested, produced and exported throughout almost every countr
 ## Best Quality Beans
 
 So to address the primary question as **Which country produces best quality coffee beans?** as we can see in `r figr("best-country",TRUE,type = "Figure")` clearly most owners of top-20 best quality coffee beans produced are in Ethiopia followed by the United States. The **total_cup_points** is plotted on a pie-chart. The *total_cup_points* variable denotes the overall rating achieved by the coffee bean awarded by the Coffee Quality Institute's trained reviewers. This rating is a cumulative sum of 10 individual quality measures like aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. In the later section of this report we will also look at how the major countries perform individually on each of these criterias.
-```{r best-country, anchor = "Figure", results='asis', fig.cap="Best country quality-wise",echo=FALSE}
+```{r best-country-old, anchor = "Figure", results='asis', fig.cap="Best country quality-wise",eval = FALSE}
 coun <- coffee_ratings %>% 
   select(total_cup_points,species,country_of_origin,owner) %>% 
   group_by(country_of_origin) %>% 
@@ -116,6 +162,11 @@ ggplot(coun,
   scale_fill_brewer("blues")
 ```
 
+
+```{r q1}
+
+
+```
 ## Altitude v/s Quality 
 
 Next, we will will probe into the next question **Does Altitude really affect the quality of the beans produced?** and to explore this we have fitted a linear model. **total_cup points** is the dependent variable and **altitude_mean_meters** as the independent variable. We have considered only the top 1105 observations for constructing the model because 3 extreme values and missing values were rendering a statistically insignificant model with a p-value of more than 0.9. The fitted model returns a p-value of 0.0003 which suggests that the model is statistically significant. `r figr("alt-plot",TRUE,type = "Figure")`  shows a positive relationship between altitude and quality of coffee beans produced. Altitude plays an important role in the formation of acidity and bitterness and enhances coffee quality attributes.
