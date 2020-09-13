@@ -26,7 +26,7 @@ link-citations: yes
 
 # Introduction and motivation
 
-Coffee is the most popular beverage in the whole world. Let's see, you're reading this with a cup of coffee,aren't you? 
+Coffee is the most popular beverage in the whole world, as an everyday beverage people are attracted not only by its taste, but also the continuous refreshing effect that helps people stay focused. Let's see, you're reading this with a cup of coffee, aren't you? 
 
 So wouldn't it be interesting to know how the coffee you drink is graded to be either the best or bad coffee batches? The country with the best graded coffee beans and why are they considered the best, the different factors which elucidate the quality of the coffee cultivated. From where they come, the processing method to get them?
 
@@ -53,9 +53,6 @@ library(kfigr)
 library(gridExtra)
 library(bookdown)
 ```
-
-
-
 
 ```{r data, message=FALSE, warning=FALSE,include=FALSE}
 # Read in with tidytuesdayR package 
@@ -126,16 +123,23 @@ After this knowing what each of those variables define with respect to our topic
 
 - *Quakers*: Quakers are unripened beans that are hard to identify during hand sorting and green bean inspection.
 
-**Questions:**
+**Questions of interest**
 
-- Which Country produces the best quality coffee beans?
+The aim of this report is to discover characteristics within best-graded coffee bean countries, and will examine from different aspects of coffee beans to explore the likely factors that influence its quality and taste.
 
-- Does Altitude really affect the quality of the beans produced?
+Secondary question:
 
-- Which countries perform best on individual grading criteria such as aroma, acidity, sweetness etc?
+1. Which Country produces the best quality coffee beans?
 
-- Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?
+2. Does Altitude really affect the quality of the beans produced?
 
+3. Which countries perform best on individual grading criteria such as aroma, acidity, sweetness etc?
+
+4. Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?
+
+5. Compare the characteristics of Arabica and Robusta, what insights can be discovered?
+
+6. Are there any similarities in the processing method of coffee beans amongst the best-graded coffee beans countries?
 
 # Explatory Data Analysis
 
