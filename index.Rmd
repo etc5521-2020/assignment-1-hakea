@@ -92,14 +92,25 @@ coffee_clean <- coffee_ratings %>%
                           )) %>%
   filter(total_points >20)
 
-# ggplot(coffee_clean, aes(total_points, country))+
-#   geom_point()
+# Check for outlier/ special cases
+
+## Check variable country and total_points
+
 # There is an outlier in total cup points
-# There is a NA in country name
-# I (Thomas) performed a quick check, and it is from colombia (based on the producer). So I changed it
+# There is a NA in country name. I (Thomas) performed a quick check, and it is from colombia (based on the producer). So I changed it
 
 coffee_clean <- coffee_clean %>%
   mutate(country = replace(country, is.na(country), "Colombia"))
+
+## Check variable altitude
+
+# There are places where altitude > 11000m (Which is impossible, given that the highest mountain on Earth is only ~9km in height)
+
+# Instead of filtering them away, I performed a Google fact-check.
+# And find nothing (Well, from the dataset, they are at height 1901.64)
+# So I detele them.
+coffee_clean_height <- coffee_clean %>%
+  filter(altitude_mean_meters < 9000)
 
 ```
 
@@ -181,19 +192,24 @@ ggplotly(q1)
 ```
 ## Altitude v/s Quality 
 
-Next, we will will probe into the next question **Does Altitude really affect the quality of the beans produced?** and to explore this we have fitted a linear model. **total_cup points** is the dependent variable and **altitude_mean_meters** as the independent variable. We have considered only the top 1105 observations for constructing the model because 3 extreme values and missing values were rendering a statistically insignificant model with a p-value of more than 0.9. The fitted model returns a p-value of 0.0003 which suggests that the model is statistically significant. `r figr("alt-plot",TRUE,type = "Figure")`  shows a positive relationship between altitude and quality of coffee beans produced. Altitude plays an important role in the formation of acidity and bitterness and enhances coffee quality attributes.
 
-```{r altitude, echo=FALSE}
-alt_data <- coffee_ratings %>% arrange(altitude_mean_meters) %>% head(1105)
-
-```
+In short, There is a slight, very very veryyyy small relation - Thomas
 
 ```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE}
- lm(total_cup_points ~ altitude_mean_meters, alt_data) %>%   broom::tidy() %>% kable(caption = "Altitude v/s Quality stats") %>% kable_styling()
+
+temp <-  lm(total_points ~ altitude_mean_meters, a) %>%
+broom::tidy() %>%
+mutate_if(is.numeric, round, 5)
+summary(temp)
+temp
+  round(temp$p.value,2)
+  kable(caption = "Altitude v/s Quality stats") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 ```{r alt-plot, anchor = "Figure", results='asis', fig.cap="Regression model for Altitude", echo=FALSE,warning=FALSE,message=FALSE}
-ggplot(data = alt_data, aes(x = total_cup_points, y = altitude_mean_meters)) +
+ggplot(data = coffee_clean_height, 
+       aes(x = total_points, y = altitude_mean_meters)) +
   geom_point() +
   geom_smooth(method = lm)
 ```
