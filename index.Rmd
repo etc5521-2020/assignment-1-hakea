@@ -362,21 +362,27 @@ After looking at these plots, the conclusion drawn are as follows: The common ch
 
 ## Leading Regions
 
-To respond to our final question **Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?** we use a barplot in `r figr("regions",TRUE,type = "Figure")`. The x-axis shows the total points a coffe bean recieves and the y-axis depicts the different regions where they were produced. The bars are coloured according to the country they belong to. Evidently Hulia is a region in Colombia where coffee beans get consistent good ratings and is the best region to grow coffee beans.
+To respond to our final question **Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?** we use a barplot in `r figr("regions",TRUE,type = "Figure")`. The x-axis shows the total points a coffe bean recieves and the y-axis depicts the different regions where they were produced. The bars are coloured according to the country they belong to. Evidently Guji-Hambela is a region in Ethiopia where coffee beans get consistent good ratings and is the best region to grow coffee beans.
+
+On the other hand, the figure also indicate that out of top 10 average coffee bean rating regions, Ethiopia takes over 4 regions, which also correspond to the statement made previously that Ethiopia is the top country that produces quality coffee beans.
 
 ```{r regions, anchor = "Figure", results='asis', message=FALSE,warning=FALSE, fig.cap="Best Regions for the quality of coffee beans",echo=FALSE}
+
 reg <- coffee_ratings %>% 
-  group_by(country_of_origin,species,region,total_cup_points) %>% 
-  summarise(sum = sum(total_cup_points)) %>% 
-  arrange(desc(sum)) %>% 
-  head(40)
+  group_by(country_of_origin,region) %>% 
+  summarise(mean = mean(total_cup_points)) %>% 
+  arrange(desc(mean)) %>%
+  head(10)
 
 ggplot(reg,
-        aes(x = reorder(region, -total_cup_points),
-            y = total_cup_points,
+        aes(x = reorder(region, mean),
+            y = mean,
             fill = country_of_origin)) + 
-  xlab("Region")+
-geom_col()
+  xlab("Region") +
+  ylab("Average coffee bean rating") +
+  geom_col() +
+  theme(axis.text.x = element_text(size = 10, angle = 60)) +
+  scale_fill_discrete(name="Country of Origin")
 ```
 
 ## Largest Producer
