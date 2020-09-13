@@ -44,6 +44,10 @@ The original data is a dataframe scraped by James LeDoux from the Coffee Quality
 
 Since both the datasets (Arabica and Robusta) are just two different species of coffee , they were joined to produce the dataset, which we now use “coffee_ratings.csv” with 1339 observations and 43 variables. 
 
+## Data limitation
+
+- As the number of graded coffee beans differ largely from country to country, some of the analysis will be biased.
+- For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researcher merge all this area together to better represent the country.
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
@@ -76,7 +80,7 @@ coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatasci
 ```{r data-clean}
 # Tidy the name a bit
 
-coffee_ratings_clean <- coffee_ratings %>% 
+coffee_clean <- coffee_ratings %>% 
   # Shorten the variables name
   rename(country = country_of_origin,
          total_points = total_cup_points,
@@ -85,18 +89,16 @@ coffee_ratings_clean <- coffee_ratings %>%
   # Shorten the name of obs
   mutate(country = recode(country, 
                           "United States" = "US",
-                          "United States (Hawaii)" = "US (Hawaii)",
-                          "United States (Puerto Rico)" = "US (Puerto Rico)"
-                          ))
+                          "United States (Hawaii)" = "US",
+                          "United States (Puerto Rico)" = "US"
+                          )) %>%
+  filter(total_points >20)
 
 ggplot(coffee_clean, aes(total_points, country))+
   geom_point()
 # There is an outlier in total cup points
-
-
 # There is a NA in country name
-# I (Thomas) performed a quick check, and it is from colombia (based on the producer)
-# So I changed it
+# I (Thomas) performed a quick check, and it is from colombia (based on the producer). So I changed it
 
 coffee_clean <- coffee_clean %>%
   mutate(country = replace(country, is.na(country), "Colombia"))
@@ -148,15 +150,15 @@ So to address the primary question as **Which country produces best quality coff
 ```{r q1, results='asis', fig.cap="Best country quality-wise"}
 # Get countries that have more then 5 beans graded
 temp <- coffee_clean %>% group_by(country) %>%
-  summarise(count = n()) %>% 
+  summarise(count = n()) %>%
   filter(count > 5) %>% 
-  ungroup() %>% 
   pull(country) # Get the country name out as vector)
 coffee_clean %>% filter (country %in% temp) %>%
 mutate(country = fct_reorder(country, total_points)) %>% 
 ggplot(aes(x = total_points,
            y = country))+
   geom_boxplot()
+
 ```
 ## Altitude v/s Quality 
 
