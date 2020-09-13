@@ -47,7 +47,7 @@ Since both the datasets (Arabica and Robusta) are just two different species of 
 ## Data limitation
 
 - As the number of graded coffee beans differ largely from country to country, some of the analysis will be biased.
-- For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researcher merge all this area together to better represent the country.
+- For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researcher merge all this areas together to better represent the country.
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
@@ -56,6 +56,7 @@ library(fmsb)
 library(kfigr)
 library(gridExtra)
 library(bookdown)
+library(plotly)
 ```
 
 ```{r data, message=FALSE, warning=FALSE,include=FALSE}
@@ -91,8 +92,8 @@ coffee_clean <- coffee_ratings %>%
                           )) %>%
   filter(total_points >20)
 
-ggplot(coffee_clean, aes(total_points, country))+
-  geom_point()
+# ggplot(coffee_clean, aes(total_points, country))+
+#   geom_point()
 # There is an outlier in total cup points
 # There is a NA in country name
 # I (Thomas) performed a quick check, and it is from colombia (based on the producer). So I changed it
@@ -148,21 +149,35 @@ Secondary question:
 Coffee beans are harvested, produced and exported throughout almost every country in the world. This dataset contains the data of `r unique(coffee_ratings$country_of_origin)`. We will be focusing on the manufacturing and the quality aspect of the beans produced in this report. The two main variants of a coffee bean are Arabica and Robusta. Approximately 60% of coffee produced in the world is Arabica and approximately 40% is Robusta. Arabica beans consists about 0.8%-1.4% caffeine and Robusta beans  consists  of 1.7%-4% caffeine. Coffee is one of the most important cash crop in the world. [Wikipedia](https://en.wikipedia.org/wiki/Coffee_bean) 
 
 ## Best Quality Beans
+The Coffee Quality Institute is a non-profit organization that grades coffee samples from around the world in a consistent and professional manner.
 
-So to address the primary question as **Which country produces best quality coffee beans?** as we can see in `r figr("best-country",TRUE,type = "Figure")` clearly most owners of top-20 best quality coffee beans produced are in Ethiopia followed by the United States. The **total_cup_points** is plotted on a pie-chart. The *total_cup_points* variable denotes the overall rating achieved by the coffee bean awarded by the Coffee Quality Institute's trained reviewers. This rating is a cumulative sum of 10 individual quality measures like aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. In the later section of this report we will also look at how the major countries perform individually on each of these criterias.
+The coffee beans are graded by the Coffee Quality Institute's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. 
+Figure \@ref(fig:q1) aims to address the primary question **Which country produces best quality coffee beans?**. X axis shows the country while Y axis denotes the overall rating achieved by the coffee bean. It is clear that Ethiopia produced the highest quality of coffee beans. However, it is interesting to note that there is not much variation between countries as most of them have median score of around 80-85 points. Thus, We can conclude that based on the dataset, there is not much difference in coffee quality between countries, with Ethipoia produces the highest-quality beans.
 
-```{r q1, results='asis', fig.cap="Best country quality-wise"}
+
+```{r q1, results='asis', fig.cap="Boxplot for total ratings of coffee beans by country"}
 # Get countries that have more then 5 beans graded
 temp <- coffee_clean %>% group_by(country) %>%
   summarise(count = n()) %>%
   filter(count > 5) %>% 
   pull(country) # Get the country name out as vector)
-coffee_clean %>% filter (country %in% temp) %>%
-mutate(country = fct_reorder(country, total_points)) %>% 
-ggplot(aes(x = total_points,
-           y = country))+
-  geom_boxplot()
 
+
+q1 <- coffee_clean %>% filter (country %in% temp) %>%
+mutate(country = fct_reorder(country, total_points)) %>% 
+ggplot(aes(x = country,
+           y = total_points))+
+  geom_boxplot()+
+  coord_flip() +
+  ggtitle("Total ratings of coffee bean by country ")+
+  xlab("Country")+
+  ylab("Total ratings")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+  
+
+
+ggplotly(q1)
 ```
 ## Altitude v/s Quality 
 
@@ -324,10 +339,6 @@ Indo <- radarchart(dataI,
            title = "Indonesia",
            pfcol = scales::alpha("gold", 0.3),
            plwd = 2)
-```
-
-```{r merged}
-grid.arrange(Ehi, US, Brazil, Peru, Indo, ncol = 2)
 ```
 
 After looking at these plots, the conclusion drawn are as follows: The common characteristics that these top 5 countries have are the consistent higher values of *uniformity* and *clean cup*. Among all these countries, it can be seen that the country **Ethiopia** has the highest values for all the different characteristics that we have proven to have a significant affect on the quality of the coffee beans in the above sections. It is also interesting how the *sweetness* has a perfect score of 10 in all other countries other than *United States* as depicted.
