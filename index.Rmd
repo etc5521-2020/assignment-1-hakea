@@ -303,7 +303,6 @@ reg <- coffee_ratings %>%
   summarise(sum = sum(total_cup_points)) %>% 
   arrange(desc(sum)) %>% 
   head(40)
-
 ggplot(reg,
         aes(x = reorder(region, -total_cup_points),
             y = total_cup_points,
@@ -311,6 +310,7 @@ ggplot(reg,
   xlab("Region")+
 geom_col()
 ```
+
 
 ## Largest Producer
 
