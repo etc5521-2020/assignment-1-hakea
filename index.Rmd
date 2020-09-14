@@ -30,7 +30,7 @@ link-citations: yes
 
 Coffee is the most popular beverage around the world, and as a dominant beverage, people are attracted not only by its taste, but also its continuous refreshing effect that helps people stay focused. Let's see, you're reading this with a cup of coffee, aren't you? 
 
-The coffee culture is gradually developed when it is first introduced in 15th century, and facilitates the practice of coffee tasting. Coffee tasters measures coffee from various aspects and rated the coffee on a scale of 100 ultimately. We are curious about why these coffee considered the best, which, the different factors that elucidate the quality of the coffee cultivated and the country with the best graded coffee beans.
+The coffee culture is gradually developed when it is first introduced in 15th century, and facilitates the practice of coffee tasting. Coffee tasters measures coffee from various aspects and rated the coffee on a scale of 0-100 ultimately. We are curious about why these coffee considered the best, which, the different factors that elucidate the quality of the coffee cultivated and the country with the best graded coffee beans.
 
 The data is originally observed from Coffee Quality Institute website and was scraped by [James DeLoux](https://github.com/jldbc/coffee-quality-database), the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, it is then cleaned by [Thomas Mock](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-07). 
 
@@ -40,21 +40,11 @@ The cleaned data set consists of 1339 observations and 43 variables. And some po
 
 # Data description
 
-*Source of data* : This data originally comes from Coffee Quality Institute website and was scraped by and used by  a github account by  [James DeLoux](https://github.com/jldbc/coffee-quality-database) ,this data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv) . And this dataset was analysed by [Yorgos Askalidis](https://towardsdatascience.com/the-data-speak-ethiopia-has-the-best-coffee-91f88ed37e84).
+The original data is a data frame scraped by James LeDoux in January 2018 from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the data set by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc.
 
-*Collection Methods*: This dataset contains the review of 1312 arabica and 28 robusta beans from the Coffee Quality Institute’s trained reviewers. 
+Data wrangling and cleaning is crucial to produce an exploratory data analysis fluently. Originally there are two separate data set `raw_robusta` and `raw_arabica`. Thomas Mock first cleaned the variable names in both data set with function `janitor::clean_names`, and inappropriate data class is corrected using `col_double`, `col_character` etc. Variables like salt_acid, bitter_sweet, fragrance_aroma, mouthfeel, and uniform_cup is renamed to acidity, sweetness, aroma, body and uniformity respectively, to allow a better understanding for readers.
 
-*Time Frame of dataset*: January, 2018
-
-The original data is a dataframe scraped by James LeDoux from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the dataset by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc.
-
-
-Since both the datasets (Arabica and Robusta) are just two different species of coffee , they were joined to produce the dataset, which we now use “coffee_ratings.csv” with 1339 observations and 43 variables. 
-
-## Data limitation
-
-- As the number of graded coffee beans differ largely from country to country, some of the analysis will be biased.
-- For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researcher merge all this areas together to better represent the country.
+The data sets were then joined by implementing the function `bind_rows` to produce the merged data set, which is exported to a single csv file “coffee_ratings.csv” with 1339 observations and 43 variables. 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
@@ -123,7 +113,7 @@ coffee_clean_height <- coffee_clean %>%
 ```
 
 
-**Structure of data:** 
+## Structure of data 
 
 After this knowing what each of those variables define with respect to our topic is important so here are a few variables we should know the general meaning to in accordance with coffee:
 
@@ -145,7 +135,7 @@ After this knowing what each of those variables define with respect to our topic
 
 - *Quakers*: Quakers are unripened beans that are hard to identify during hand sorting and green bean inspection.
 
-**Questions of interest**
+## Questions of interest
 
 The aim of this report is to discover characteristics within best-graded coffee bean countries, and will examine from different aspects of coffee beans to explore the likely factors that influence its quality and taste.
 
