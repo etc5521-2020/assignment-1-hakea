@@ -5,6 +5,8 @@ team: Hakea
 author:
   - Dang Thanh Nguyen
   - Rui Min Lin
+  - (Siddhant V Tirodkar)
+  - (Varsha Ujjinni Vijay Kumar)
 date: "`r Sys.Date()`"
 output: 
   bookdown::html_document2: 
@@ -26,10 +28,15 @@ link-citations: yes
 
 # Introduction and motivation
 
-Coffee is the most popular beverage in the whole world, as an everyday beverage people are attracted not only by its taste, but also the continuous refreshing effect that helps people stay focused. Let's see, you're reading this with a cup of coffee, aren't you? 
+Coffee is the most popular beverage around the world, and as a dominant beverage, people are attracted not only by its taste, but also its continuous refreshing effect that helps people stay focused. Let's see, you're reading this with a cup of coffee, aren't you? 
 
-So wouldn't it be interesting to know how the coffee you drink is graded to be either the best or bad coffee batches? The country with the best graded coffee beans and why are they considered the best, the different factors which elucidate the quality of the coffee cultivated. From where they come, the processing method to get them?
+The coffee culture is gradually developed when it is first introduced in 15th century, and facilitates the practice of coffee tasting. Coffee tasters measures coffee from various aspects and rated the coffee on a scale of 100 ultimately. We are curious about why these coffee considered the best, which, the different factors that elucidate the quality of the coffee cultivated and the country with the best graded coffee beans.
 
+The data is originally observed from Coffee Quality Institute website and was scraped by [James DeLoux](https://github.com/jldbc/coffee-quality-database), the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, it is then cleaned by [Thomas Mock](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-07). 
+
+The cleaned data set consists of 1339 observations and 43 variables. And some potential limitations are: 
+* As the number of graded coffee beans differ largely from country to country, some of the analysis will be biased. 
+* For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researcher merge all this areas together to better represent the country.
 
 # Data description
 
@@ -48,6 +55,7 @@ Since both the datasets (Arabica and Robusta) are just two different species of 
 
 - As the number of graded coffee beans differ largely from country to country, some of the analysis will be biased.
 - For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researcher merge all this areas together to better represent the country.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
