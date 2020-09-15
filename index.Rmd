@@ -140,26 +140,30 @@ The aim of this report is to discover characteristics within best-graded coffee 
 
 Secondary question:
 
-1. Which Country produces the best quality coffee beans?
+1. Which Country produces the best quality coffee beans, which regions perform better than others in the quality of the coffee beans produced, intra-country?
 
-2. Does Altitude really affect the quality of the beans produced?
+2. Using the regression model, explain how factors like altitude, processing method and defects affect the quality of the beans produced.
 
 3. Which countries perform best on individual grading criteria such as aroma, acidity, sweetness etc?
 
-4. Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?
+4. The quality of coffee developed overtime. (NEW)
 
-5. Compare the characteristics of Arabica and Robusta, what insights can be discovered?
+5. Are there any similarities in the processing method of coffee beans amongst the best-graded coffee beans countries? (NEW)
 
-6. Are there any similarities in the processing method of coffee beans amongst the best-graded coffee beans countries?
+
 
 # Explatory Data Analysis
 
 Coffee beans are harvested, produced and exported throughout almost every country in the world. This dataset contains the data of `r unique(coffee_ratings$country_of_origin)`. We will be focusing on the manufacturing and the quality aspect of the beans produced in this report. The two main variants of a coffee bean are Arabica and Robusta. Approximately 60% of coffee produced in the world is Arabica and approximately 40% is Robusta. Arabica beans consists about 0.8%-1.4% caffeine and Robusta beans  consists  of 1.7%-4% caffeine. Coffee is one of the most important cash crop in the world. [Wikipedia](https://en.wikipedia.org/wiki/Coffee_bean) 
 
-## Best Quality Beans
+## Which Country produces the best quality coffee beans, which regions perform better than others in the quality of the coffee beans produced, intra-country?
+
+**Country with best coffee beans**
+
 The Coffee Quality Institute is a non-profit organization that grades coffee samples from around the world in a consistent and professional manner.
 
 The coffee beans are graded by the Coffee Quality Institute's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. 
+
 Figure \@ref(fig:q1) aims to address the primary question **Which country produces best quality coffee beans?**. X axis shows the country while Y axis denotes the overall rating achieved by the coffee bean. It is clear that Ethiopia produced the highest quality of coffee beans. However, it is interesting to note that there is not much variation between countries as most of them have median score of around 80-85 points. Thus, We can conclude that based on the dataset, there is not much difference in coffee quality between countries, with Ethipoia produces the highest-quality beans.
 
 
@@ -187,13 +191,56 @@ ggplot(aes(x = country,
 
 ggplotly(q1)
 ```
-## Altitude v/s Quality 
 
+**Leading regions**
+
+We use a barplot in `r figr("regions",TRUE,type = "Figure")`. The x-axis shows the total points a coffe bean recieves and the y-axis depicts the different regions where they were produced. The bars are coloured according to the country they belong to. Evidently Guji-Hambela is a region in Ethiopia where coffee beans get consistent good ratings and is the best region to grow coffee beans.
+
+On the other hand, the figure also indicate that out of top 10 average coffee bean rating regions, Ethiopia takes over 4 regions, which also correspond to the statement made previously that Ethiopia is the top country that produces quality coffee beans.
+
+```{r regions, anchor = "Figure", results='asis', message=FALSE,warning=FALSE, fig.cap="Best Regions for the quality of coffee beans",echo=FALSE}
+
+reg <- coffee_ratings %>% 
+  group_by(country_of_origin,region) %>% 
+  summarise(mean = mean(total_cup_points)) %>% 
+  arrange(desc(mean)) %>%
+  head(10)
+
+ggplot(reg,
+        aes(x = reorder(region, mean),
+            y = mean,
+            fill = country_of_origin)) + 
+  xlab("Region") +
+  ylab("Average coffee bean rating") +
+  geom_col() +
+  theme(axis.text.x = element_text(size = 10, angle = 60)) +
+  scale_fill_discrete(name="Country of Origin")
+```
+
+**Largest Producer**
+
+We also observe that Colombia is the largest producer of coffee beans Arabica variant with more than 40000 bags followed by Guatemala and Brazil. We establish using a bar-plot in `r figr("producer",TRUE,type = "Figure")` with y-axis representing the number of bags produced and x-axis representing different countries. The Figure shows the top-6 coffee bean producing countries.
+
+```{r producer, anchor = "Figure", results='asis', message=FALSE, warning=FALSE, fig.cap="Largest producer country-wise",echo=FALSE}
+highest_produce <- coffee_ratings %>% group_by(country_of_origin,species) %>% summarise(nob = sum(number_of_bags)) %>% arrange(desc(nob)) %>% head()
+
+ggplot(highest_produce, 
+       aes(x = reorder(country_of_origin, - nob), 
+           y = nob)) + 
+  geom_col(fill = "deepskyblue4") +
+  labs(x = "Country", y = "Number of bags produced") +
+  geom_text(label =  highest_produce$species)
+```
+
+
+## Using the regression model, explain how factors like altitude, processing method and defects affect the quality of the beans produced.
+
+**Altitude v/s Quality**
 
 In short, There is a slight, very very veryyyy small relation - Thomas
 
-```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE}
-
+```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE, eval = FALSE}
+#incomplete code, so the chunk is set to eval = FALSE temporarily
 temp <-  lm(total_points ~ altitude_mean_meters, a) %>%
 broom::tidy() %>%
 mutate_if(is.numeric, round, 5)
@@ -217,7 +264,7 @@ res <- cor.test(coffee_ratings$total_cup_points, as.numeric(coffee_ratings$altit
 res
 ```
 
-## Processing Method v/s Quality
+**Processing Method v/s Quality**
 
 To check if the processing method affects the quality of coffee beans produced, we have taken help of the ANOVA test as the processing method is a categorical variable. The ANOVA test returns p-values very far away from the confidence interval of 5% which can be observed when we plot the residuals against the fitted values in `r figr("one-way",TRUE,type = "Figure")` . Hence it is established that the processing methods used in producing the coffee beans does not influence the quality of beans produced.
 
@@ -231,7 +278,7 @@ summary(one.way)
 plot(one.way, which = 1, col = c("blue"))
 ```
 
-## Defects v/s Quality
+**Defects v/s Quality**
 
 After the linear model for altitude turned out to be insignificant, we figured there are several other variables in the dataset that we could try fitting a model. The dataset contains category one and category two defects which are also known as primary and secondary defects and we fitted a muti-variate model using the same. The model after considering both the variables return a p-value very close to 0 and hence this model is considered a good one and as can be seen in `r figr("def-plot",TRUE,type = "Figure")` which suggest that almost all the residuals reside very close to the 0 line with a very few outliers. Thus it can be understood that defects influence the quality of coffee beans produced.
 
@@ -245,7 +292,7 @@ d <- defects %>% broom::augment()
 ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 ```
 
-## Individual Criteria 
+## Which countries perform best on individual grading criteria such as aroma, acidity, sweetness etc?
 
 To check which criteria the top 5 countries perform best in we have used radar charts from `r figr("Eth-radar",TRUE,type = "Figure")` onwards. A radar chart is a useful way to depict multi-variate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. The top-5 coffee bean producing countries according to our analysis are Ethiopia, Brazil, United States, Indonesia and Peru.
 
@@ -357,45 +404,7 @@ Indo <- radarchart(dataI,
 After looking at these plots, the conclusion drawn are as follows: The common characteristics that these top 5 countries have are the consistent higher values of *uniformity* and *clean cup*. Among all these countries, it can be seen that the country **Ethiopia** has the highest values for all the different characteristics that we have proven to have a significant affect on the quality of the coffee beans in the above sections. It is also interesting how the *sweetness* has a perfect score of 10 in all other countries other than *United States* as depicted.
 
 
-## Leading Regions
 
-To respond to our final question **Which regions/companies perform better than others in the quality of the coffee beans produced, intra-country?** we use a barplot in `r figr("regions",TRUE,type = "Figure")`. The x-axis shows the total points a coffe bean recieves and the y-axis depicts the different regions where they were produced. The bars are coloured according to the country they belong to. Evidently Guji-Hambela is a region in Ethiopia where coffee beans get consistent good ratings and is the best region to grow coffee beans.
-
-On the other hand, the figure also indicate that out of top 10 average coffee bean rating regions, Ethiopia takes over 4 regions, which also correspond to the statement made previously that Ethiopia is the top country that produces quality coffee beans.
-
-```{r regions, anchor = "Figure", results='asis', message=FALSE,warning=FALSE, fig.cap="Best Regions for the quality of coffee beans",echo=FALSE}
-
-reg <- coffee_ratings %>% 
-  group_by(country_of_origin,region) %>% 
-  summarise(mean = mean(total_cup_points)) %>% 
-  arrange(desc(mean)) %>%
-  head(10)
-
-ggplot(reg,
-        aes(x = reorder(region, mean),
-            y = mean,
-            fill = country_of_origin)) + 
-  xlab("Region") +
-  ylab("Average coffee bean rating") +
-  geom_col() +
-  theme(axis.text.x = element_text(size = 10, angle = 60)) +
-  scale_fill_discrete(name="Country of Origin")
-```
-
-## Largest Producer
-
-We also observe that Colombia is the largest producer of coffee beans Arabica variant with more than 40000 bags followed by Guatemala and Brazil. We establish using a bar-plot in `r figr("producer",TRUE,type = "Figure")` with y-axis representing the number of bags produced and x-axis representing different countries. The Figure shows the top-6 coffee bean producing countries.
-
-```{r producer, anchor = "Figure", results='asis', message=FALSE, warning=FALSE, fig.cap="Largest producer country-wise",echo=FALSE}
-highest_produce <- coffee_ratings %>% group_by(country_of_origin,species) %>% summarise(nob = sum(number_of_bags)) %>% arrange(desc(nob)) %>% head()
-
-ggplot(highest_produce, 
-       aes(x = reorder(country_of_origin, - nob), 
-           y = nob)) + 
-  geom_col(fill = "deepskyblue4") +
-  labs(x = "Country", y = "Number of bags produced") +
-  geom_text(label =  highest_produce$species)
-```
 
 # References
 
