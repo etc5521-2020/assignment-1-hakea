@@ -28,9 +28,13 @@ link-citations: yes
 
 # Introduction and motivation
 
-Coffee is the most popular beverage around the world, and as a dominant beverage, people are attracted not only by its taste, but also its continuous refreshing effect that helps people stay focused. Let's see, you're reading this with a cup of coffee, aren't you? 
+People drink coffee for various reasons: Either to warm their soul in a chilling morning, or to stay awake and focus after a long, restless night. Whatever the reason is, it is clear that we love the dark, fragrance liquid. Some people loves coffee for its pleasant aroma. Some others loves its unique flavor notes. Some simply loves it because it is as black as their soul.  But most would agree that nothing is better than a cup of great coffee to start a wonderful, productive day.
+ 
+The question is, how do we, coffee lovers, should consider when planning to buy a premium bag of precious black beans?  Hence, in this report. We will have a journey to the place where the coffee trees were raised and the beans were harvested, to see what affects the quality of our beloved beans. we, coffee lovers, should consider when buying a premium bag of the 
 
-The coffee culture is gradually developed when it is first introduced in 15th century, and facilitates the practice of coffee tasting. Coffee tasters measures coffee from various aspects and rated the coffee on a scale of 0-100 ultimately. We are curious about why these coffee considered the best, which, the different factors that elucidate the quality of the coffee cultivated and the country with the best graded coffee beans.
+
+
+# Data description
 
 The data is originally observed from Coffee Quality Institute website and was scraped by [James DeLoux](https://github.com/jldbc/coffee-quality-database), the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, it is then cleaned by [Thomas Mock](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-07). 
 
@@ -38,9 +42,8 @@ The cleaned data set consists of 1339 observations and 43 variables. And some po
 
 * As the number of graded coffee beans differ largely from country to country, some of the analysis will be biased. 
 
-* For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researcher merge all this areas together to better represent the country.
+* For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researchers merge all this areas together to better represent the country.
 
-# Data description
 
 Data wrangling and cleaning is crucial to produce an exploratory data analysis fluently. The original data is a data frame scraped by James LeDoux in January 2018 from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the data set by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc. On the other hand, there are two separate data set `raw_robusta` and `raw_arabica` originally. Thomas Mock first cleaned the variable names in both data set with function `janitor::clean_names`, and inappropriate data class is corrected using `col_double`, `col_character` etc. Variables like salt_acid, bitter_sweet, fragrance_aroma, mouthfeel, and uniform_cup is renamed to acidity, sweetness, aroma, body and uniformity respectively, to allow a better understanding for readers.
 
