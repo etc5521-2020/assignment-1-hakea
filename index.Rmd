@@ -61,14 +61,14 @@ library(plotly)
 # Read in with tidytuesdayR package 
 # Install from CRAN via: install.packages("tidytuesdayR")
 
-tuesdata <- tidytuesdayR::tt_load('2020-07-07')
-tuesdata <- tidytuesdayR::tt_load(2020, week = 28)
+#tuesdata <- tidytuesdayR::tt_load('2020-07-07')
+#tuesdata <- tidytuesdayR::tt_load(2020, week = 28)
 
-coffee_ratings <- tuesdata$coffee_ratings
+#coffee_ratings <- tuesdata$coffee_ratings
 
 ```
 
-```{r alternative, eval=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
+```{r alternative, message=FALSE, warning=FALSE, echo=FALSE}
 # If the above code renders an error, alternatively this chunk can be used to read the data!
 coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv')
 ```
@@ -117,23 +117,22 @@ coffee_clean_height <- coffee_clean %>%
 
 After this knowing what each of those variables define with respect to our topic is important so here are a few variables we should know the general meaning to in accordance with coffee:
 
-- *Aroma(aroma grade)* : Has both fragrance (ground beans) and aroma (hot water with coffee powder) 
+```{r datadesc-table}
+tb <- tibble(
+  Variable = c("total_cup_points","species","owner","country_of_origin", "farm_name", "lot_number", "mill", "ico_number", "company", "altitude", "region", "producer", "number_of_bags", "bag_weight", "in_country_partner", "harvest_year", "grading_date", "owner_1", "variety", "processing_method", "aroma", "flavor", "aftertaste", "acidity", "body", "balance", "uniformity", "clean_cup", "sweetness", "cupper_points", "moisture", "category_one_defects", "quakers", "color", "category_two_defects", "expiration", "certification_body", "certification_address", "certification_contact", "unit_of_measurement", "altitude_low_meters", "altitude_high_meters", "altitude_mean_meters"),
+  Class = c("double","character","character","character","character","character","character","character","character","character","character","character","double","character","character","character","character","character","character","character","double","double","double","double","double","double","double","double","double","double","double","double","double","character","double","character","character","character","character","character","double","double","double"),  
+  Description = c("Total rating/points (0 - 100 scale)","Species of coffee bean (arabica or robusta)","Owner of the farm","Where the bean came from","Name of the farm","Lot number of the beans tested","Mill where the beans were processed","International Coffee Organization number","Company name","Altitude - this is a messy column - I've left it for some cleaning","Region where bean came from","Producer of the roasted bean","Number of bags tested","Bag weight tested","Partner for the country","When the beans were harvested (year)","When the beans were graded","Who owns the beans","Variety of the beans","Method for processing",
+"Has both fragrance (ground beans) and aroma (hot water with coffee powder)","Flavor grade","Length of positive flavor remaining after the coffee is swallowed",
+"The score depends on the origin characteristics and other factors(degree of roast)","Body grade","Balance grade","Refers to the consistency of flavor . 2 points are awarded for each cup displaying this attribute, with a maximum of 10 points if all 5 cups are the same.","Refers to a lack of interfering negative impressions from first ingestion to final aftertaste","Sweetness grade","The cupper marks the intensity of the Aroma on a scale","Moisture Grade","Full black or sour bean, pod/cherry, and large or medium sticks or stones(count)","Unripened beans that are hard to identify during hand sorting and green bean inspection","Color of bean","Parchment, hull/husk, broken/chipped, insect damage, partial black or sour, shell, small sticks or stones, water damage(count)","Expiration date of the beans","Who certified it","Certification body address","Certification contact","Unit of measurement","Altitude low meters","Altitude high meters","Altitude mean meters"
+))
 
-- *Aftertaste* : length of positive flavor remaining after the coffee is swallowed.
+tb1 <- tb %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  scroll_box(width = "800px", height = "500px")
+tb1
+```
 
-- *Acidity* : the score depends on the origin characteristics and other factors(degree of roast)
-
-- *Uniformity* : refers to the consistency of flavor . 2 points are awarded for each cup displaying this attribute, with a maximum of 10 points if all 5 cups are the same.
-
-- *Clean_cup* : refers to a lack of interfering negative impressions from first ingestion to final aftertaste, a "transparency" of cup.  2 points are awarded for each cup displaying the attribute.
-
-- *Cupper-points* : The cupper marks the intensity of the Aroma on a scale. A final score for Fragrance and Aroma is now given on the basis of a combined evaluation of Fragrance and Aroma.
-
-- *Category 1 defect*: Full black or sour bean, pod/cherry, and large or medium sticks or stones.
-
-- *Category 2 defect*: Parchment, hull/husk, broken/chipped, insect damage, partial black or sour, shell, small sticks or stones, water damage.
-
-- *Quakers*: Quakers are unripened beans that are hard to identify during hand sorting and green bean inspection.
 
 ## Questions of interest
 
@@ -193,7 +192,7 @@ ggplotly(q1)
 
 In short, There is a slight, very very veryyyy small relation - Thomas
 
-```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE}
+```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE, eval = FALSE}
 
 temp <-  lm(total_points ~ altitude_mean_meters, a) %>%
 broom::tidy() %>%
