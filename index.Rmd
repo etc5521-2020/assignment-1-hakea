@@ -35,14 +35,14 @@ The coffee culture is gradually developed when it is first introduced in 15th ce
 The data is originally observed from Coffee Quality Institute website and was scraped by [James DeLoux](https://github.com/jldbc/coffee-quality-database), the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, it is then cleaned by [Thomas Mock](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-07). 
 
 The cleaned data set consists of 1339 observations and 43 variables. And some potential limitations are: 
+
 * As the number of graded coffee beans differ largely from country to country, some of the analysis will be biased. 
+
 * For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researcher merge all this areas together to better represent the country.
 
 # Data description
 
-The original data is a data frame scraped by James LeDoux in January 2018 from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the data set by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc.
-
-Data wrangling and cleaning is crucial to produce an exploratory data analysis fluently. Originally there are two separate data set `raw_robusta` and `raw_arabica`. Thomas Mock first cleaned the variable names in both data set with function `janitor::clean_names`, and inappropriate data class is corrected using `col_double`, `col_character` etc. Variables like salt_acid, bitter_sweet, fragrance_aroma, mouthfeel, and uniform_cup is renamed to acidity, sweetness, aroma, body and uniformity respectively, to allow a better understanding for readers.
+Data wrangling and cleaning is crucial to produce an exploratory data analysis fluently. The original data is a data frame scraped by James LeDoux in January 2018 from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the data set by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc. On the other hand, there are two separate data set `raw_robusta` and `raw_arabica` originally. Thomas Mock first cleaned the variable names in both data set with function `janitor::clean_names`, and inappropriate data class is corrected using `col_double`, `col_character` etc. Variables like salt_acid, bitter_sweet, fragrance_aroma, mouthfeel, and uniform_cup is renamed to acidity, sweetness, aroma, body and uniformity respectively, to allow a better understanding for readers.
 
 The data sets were then joined by implementing the function `bind_rows` to produce the merged data set, which is exported to a single csv file “coffee_ratings.csv” with 1339 observations and 43 variables. 
 
@@ -115,7 +115,7 @@ coffee_clean_height <- coffee_clean %>%
 
 ## Structure of data 
 
-After this knowing what each of those variables define with respect to our topic is important so here are a few variables we should know the general meaning to in accordance with coffee:
+After this knowing what each of those variables define with respect to our topic is important so below is the description of variables included in the data set:
 
 ```{r datadesc-table}
 tb <- tibble(
@@ -192,7 +192,7 @@ ggplotly(q1)
 
 In short, There is a slight, very very veryyyy small relation - Thomas
 
-```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE, eval = FALSE}
+```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE}
 
 temp <-  lm(total_points ~ altitude_mean_meters, a) %>%
 broom::tidy() %>%
