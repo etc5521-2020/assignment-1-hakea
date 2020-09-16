@@ -151,7 +151,7 @@ Secondary question:
 
 4. The quality of coffee developed overtime. (NEW)
 
-5. Are there any similarities in the processing method of coffee beans amongst the best-graded coffee beans countries? (NEW)
+5. Are there any similarities in the processing method of top-graded coffee beans, how did processing method affect its individual grading criteria? (NEW)
 
 
 
@@ -168,7 +168,6 @@ The Coffee Quality Institute is a non-profit organization that grades coffee sam
 The coffee beans are graded by the Coffee Quality Institute's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. 
 
 Figure \@ref(fig:q1) aims to address the primary question **Which country produces best quality coffee beans?**. X axis shows the country while Y axis denotes the overall rating achieved by the coffee bean. It is clear that Ethiopia produced the highest quality of coffee beans. However, it is interesting to note that there is not much variation between countries as most of them have median score of around 80-85 points. Thus, We can conclude that based on the dataset, there is not much difference in coffee quality between countries, with Ethipoia produces the highest-quality beans.
-
 
 ```{r q1, results='asis', fig.cap="Boxplot for total ratings of coffee beans by country"}
 # Get countries that have more then 5 beans graded
@@ -216,7 +215,7 @@ ggplot(reg,
   xlab("Region") +
   ylab("Average coffee bean rating") +
   geom_col() +
-  theme(axis.text.x = element_text(size = 10, angle = 60)) +
+  theme(axis.text.x = element_text(size = 10, angle = 90)) +
   scale_fill_discrete(name="Country of Origin")
 ```
 
@@ -225,6 +224,7 @@ ggplot(reg,
 We also observe that Colombia is the largest producer of coffee beans Arabica variant with more than 40000 bags followed by Guatemala and Brazil. We establish using a bar-plot in `r figr("producer",TRUE,type = "Figure")` with y-axis representing the number of bags produced and x-axis representing different countries. The Figure shows the top-6 coffee bean producing countries.
 
 ```{r producer, anchor = "Figure", results='asis', message=FALSE, warning=FALSE, fig.cap="Largest producer country-wise",echo=FALSE}
+
 highest_produce <- coffee_ratings %>% group_by(country_of_origin,species) %>% summarise(nob = sum(number_of_bags)) %>% arrange(desc(nob)) %>% head()
 
 ggplot(highest_produce, 
@@ -405,6 +405,60 @@ Indo <- radarchart(dataI,
 ```
 
 After looking at these plots, the conclusion drawn are as follows: The common characteristics that these top 5 countries have are the consistent higher values of *uniformity* and *clean cup*. Among all these countries, it can be seen that the country **Ethiopia** has the highest values for all the different characteristics that we have proven to have a significant affect on the quality of the coffee beans in the above sections. It is also interesting how the *sweetness* has a perfect score of 10 in all other countries other than *United States* as depicted.
+
+
+## The quality of coffee developed overtime. (NEW)
+
+## Are there any similarities in the processing method of top-graded coffee beans, how did processing method affect its individual grading criteria? (NEW)
+
+**Processing Method amonst best-graded coffee beans**
+
+```{r q5p1, results='asis', fig.cap="Common processing method of top 30 coffee beans by country"}
+
+pro_md <- coffee_clean %>%
+  dplyr::select(total_points, species, country, region, owner, method, aroma:moisture) %>%
+  dplyr::filter(!is.na(method))
+
+topbean <- pro_md %>%
+  group_by(country) %>%
+  arrange(desc(total_points)) %>%
+  head(30)
+
+q5p1 <- topbean %>%
+  ggplot(aes(method, fill = method)) +
+  geom_bar() +
+  facet_wrap(~country, ncol = 3) +
+  theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  scale_fill_discrete(name="Processing Method") +
+  ylab("Frequency") +
+  xlab("Processing Method") +
+  ggtitle("Common processing method of top 30 coffee beans")
+
+ggplotly(q5p1)
+
+```
+
+```{r}
+pmtable <- topbean %>%
+  ungroup(country) %>%
+  dplyr::select(method) %>%
+  count(method)
+
+pmtable %>%
+  kable(col.names = c("Processing Method", "Frequency")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"),
+                full_width = F)
+  
+```
+
+**Effect of processing method on its individual grading criteria**
+
+```{r}
+topbean %>%
+  ggplot(aes())
+```
+
 
 
 
