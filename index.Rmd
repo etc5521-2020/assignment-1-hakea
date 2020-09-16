@@ -67,6 +67,7 @@ library(gridExtra)
 library(bookdown)
 library(plotly)
 library(GGally)
+library(broom)
 ```
 
 ```{r data, message=FALSE, warning=FALSE,include=FALSE}
@@ -217,26 +218,28 @@ ggplotly(q1)
 
 ## What other factors that affect the quality of coffee beans?
 
-**Altitude v/s Quality**
-
 The dataset contains information about the coffee sample’s altitude of origin, variety, processing method and color. In this section, I examine if any of these characteristics correlate with the total cupping score.
 
+**Altitude v/s Quality**
 
-```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE, eval = FALSE}
+Here, I ran a model of the altitude of the sample and its total cupping score. The result is displayed in table \@ref(tab:alr-lrm). The p-value is lower then 0.05 which indicates that the model is statistically significant. The result shows a positive relationship between altitude and quality of coffee beans produced. However, it is worth to notice that the Adjusted R Square of the model is extremely small, only 0.022, or 2% (See Appendix 1), which suggest that the model is weak. 
+
+
+
+
+```{r alt-lrm}
 #incomplete code, so the chunk is set to eval = FALSE temporarily
-temp <-  lm(total_points ~ altitude_mean_meters, coffee_clean_height) %>% 
-broom::tidy() %>%
-mutate_if(is.numeric, round, 5)
+alt_model <-  lm(total_points ~ altitude_mean_meters, coffee_clean_height) 
 
-temp %>%
+alt_model %>% broom::tidy() %>%
+mutate_if(is.numeric, round, 5)%>%
   kable(caption = "Altitude v/s Quality stats") %>% 
   kable_styling(bootstrap_options = c("striped", "hover"))
-
 
 ```
 
 
-```{r alt-plot, anchor = "Figure", results='asis', fig.cap="Regression model for Altitude", echo=FALSE,warning=FALSE,message=FALSE}
+```{r alt-plot,  results='asis', fig.cap="Regression model for Altitude and Total cup points"}
 ggplot(data = coffee_clean_height, 
        aes(x = total_points, y = altitude_mean_meters)) +
   geom_point() +
@@ -481,8 +484,13 @@ The scatterplot matrix \@ref(fig:q5p2) examines the relationship between each gr
 Overall, we can observe that the "Washed/Wet" method have relatively more variations compared to other method, and the plot \@ref(fig:q5p2) also indicates the primary processing method are "Washed/Wet" and "Natural/Dry" across all coffee bean producers.And we can barely capture the appearance of other two methods.
 
 # Appendix 
-## Appendix 1. Summary table for model
+## Appendix 1. Summary of altitude model
 
+```{r glance}
+alt_model %>% glance()
+
+
+```
 
 
 # References
