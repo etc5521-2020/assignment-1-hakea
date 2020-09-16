@@ -58,6 +58,7 @@ library(kfigr)
 library(gridExtra)
 library(bookdown)
 library(plotly)
+library(GGally)
 ```
 
 ```{r data, message=FALSE, warning=FALSE,include=FALSE}
@@ -151,7 +152,7 @@ Secondary question:
 
 4. The quality of coffee developed overtime. (NEW)
 
-5. Are there any similarities in the processing method of top-graded coffee beans, how did processing method affect its individual grading criteria? (NEW)
+5. What is the common processing method of top-graded coffee beans, how different processing method behaves on the individual grading criteria of coffee? (NEW)
 
 
 
@@ -301,8 +302,13 @@ To check which criteria the top 5 countries perform best in we have used radar c
 
 
 ```{r mean,message=FALSE,warning=FALSE,echo=FALSE}
-coffee_ratings %>% filter(country_of_origin== c("Ethiopia","United States","Brazil", "Peru", "Indonesia")) %>% 
-  select(aroma, flavor,aftertaste,acidity,body,balance,uniformity,clean_cup,sweetness,cupper_points, moisture, total_cup_points, country_of_origin) %>%  group_by(country_of_origin) %>% summarise(ma = mean(aroma), mfl= mean(flavor), maf = mean(aftertaste), mac = mean(acidity), mb = mean(body),mba = mean(balance),mu = mean(uniformity), mc = mean(clean_cup), ms = mean(sweetness), mcu = mean(cupper_points), mm = mean(moisture)) %>% kable(caption = "Means for different Individual grading criterias") %>% kable_styling()
+
+coffee_ratings %>% 
+  filter(country_of_origin== c("Ethiopia","United States","Brazil", "Peru", "Indonesia")) %>% 
+  select(aroma, flavor,aftertaste,acidity,body,balance,uniformity,clean_cup,sweetness,cupper_points, moisture, total_cup_points, country_of_origin) %>%  
+  group_by(country_of_origin) %>% 
+  summarise(ma = mean(aroma), mfl= mean(flavor), maf = mean(aftertaste), mac = mean(acidity), mb = mean(body),mba = mean(balance),mu = mean(uniformity), mc = mean(clean_cup), ms = mean(sweetness), mcu = mean(cupper_points), mm = mean(moisture)) %>% 
+  kable(caption = "Means for different Individual grading criterias") %>% kable_styling()
 ```
 
 ```{r Eth-radar,anchor = "Figure", results='asis',echo=FALSE}
@@ -409,14 +415,14 @@ After looking at these plots, the conclusion drawn are as follows: The common ch
 
 ## The quality of coffee developed overtime. (NEW)
 
-## Are there any similarities in the processing method of top-graded coffee beans, how did processing method affect its individual grading criteria? (NEW)
+## What is the common processing method of top-graded coffee beans, how different processing method behaves on the individual grading criteria of coffee? (NEW)
 
-**Processing Method amonst best-graded coffee beans**
+**Processing Method amongst best-graded coffee beans**
 
 ```{r q5p1, results='asis', fig.cap="Common processing method of top 30 coffee beans by country"}
 
 pro_md <- coffee_clean %>%
-  dplyr::select(total_points, species, country, region, owner, method, aroma:moisture) %>%
+  dplyr::select(total_points, species, country, region, owner, method, aroma:cupper_points) %>%
   dplyr::filter(!is.na(method))
 
 topbean <- pro_md %>%
@@ -439,7 +445,7 @@ ggplotly(q5p1)
 
 ```
 
-```{r}
+```{r q5table}
 pmtable <- topbean %>%
   ungroup(country) %>%
   dplyr::select(method) %>%
@@ -454,9 +460,27 @@ pmtable %>%
 
 **Effect of processing method on its individual grading criteria**
 
+We picked 6 grading criteria, according to the coffee scoring article provided on [mycuppa](https://www.mycuppa.com.au/scoring-coffee):
+
+* Aroma
+* Aftertaste
+* Flavour
+* Acidity
+* Body
+* Balance
+
 ```{r}
-topbean %>%
-  ggplot(aes())
+grading <- pro_md %>%
+  dplyr::filter(method %in% c("Natural / Dry", 
+                              "Pulped natural / honey",
+                              "Semi-washed / Semi-pulped", 
+                              "Washed / Wet")) %>%
+  dplyr::select(method, aroma, aftertaste, 
+                flavor, acidity, body, balance)
+
+grading %>%
+  ggscatmat(columns = 2:7, color = "method") +
+  scale_colour_brewer(palette = "Set1")
 ```
 
 
