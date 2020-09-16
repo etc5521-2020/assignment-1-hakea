@@ -415,6 +415,8 @@ After looking at these plots, the conclusion drawn are as follows: The common ch
 
 ## The quality of coffee developed overtime. (NEW)
 
+
+
 ## What is the common processing method of top-graded coffee beans, how different processing method behaves on the individual grading criteria of coffee? (NEW)
 
 **Processing Method amongst best-graded coffee beans**
@@ -461,7 +463,7 @@ pmtable %>%
 The barchart \@ref(fig:q5p1) demonstrates the frequency of processing method in top 30 coffee bean producers, we discovered that the producers in most countries is using washed/wet method to produce coffee beans, followed by natural/dry method. In addition, majority of coffee bean producers in Ethiopia, the country that produces highest quality coffee beans, is using the natural/dry method. This is explained by @Jori-Korhonen, "The natural process is common in regions where there is no access to water such as Ethiopia and some regions in Brazil."
 
 
-**Effect of processing method on its individual grading criteria**
+**Behaviour of different processing method on the individual grading criteria of coffee**
 
 We picked 6 grading criteria, according to the coffee scoring article provided on [mycuppa](https://www.mycuppa.com.au/scoring-coffee):
 
@@ -472,21 +474,35 @@ We picked 6 grading criteria, according to the coffee scoring article provided o
 * Body
 * Balance
 
-```{r}
+```{r q5p2, results='asis', fig.cap="Scatterplot matrix of grading criterias, differentiated by processing method"}
 grading <- pro_md %>%
   dplyr::filter(method %in% c("Natural / Dry", 
                               "Pulped natural / honey",
                               "Semi-washed / Semi-pulped", 
                               "Washed / Wet")) %>%
   dplyr::select(method, aroma, aftertaste, 
-                flavor, acidity, body, balance)
+                flavor, acidity, body, balance) %>%
+  na.omit()
 
-grading %>%
+q5p2 <- grading %>%
   ggscatmat(columns = 2:7, color = "method") +
   scale_colour_brewer(palette = "Set1")
+
+q5p2
+
 ```
 
+The scatterplot matrix \@ref(fig:q5p2) examines the relationship between each grading criteria, and is differentiated by the processing method.
 
+* The scatterplot matrix demonstrates the correlation of grading criteria are positive to various extent.
+
+* The density plot for acidity located on 1st row & 1st column indicates the method "Pulped natural/honey" have relatively low density compared to other processing method.
+
+* One thing to notify is that there are presence of outliers for "Washed/Wet" method in aroma grade (on 3rd column).
+
+* A bunch of coffee beans processed with "Washed/Wet" method have relatively lower aftertaste grade.
+
+Overall, we can observe that the "Washed/Wet" method have relatively more variations compared to other method, and the plot \@ref(fig:q5p2) also indicates the primary processing method are "Washed/Wet" and "Natural/Dry" across all coffee bean producers.And we can barely capture the appearance of other two methods.
 
 
 
