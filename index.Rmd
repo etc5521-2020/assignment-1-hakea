@@ -458,6 +458,9 @@ pmtable %>%
   
 ```
 
+The barchart \@ref(fig:q5p1) demonstrates the frequency of processing method in top 30 coffee bean producers, we discovered that the producers in most countries is using washed/wet method to produce coffee beans, followed by natural/dry method. In addition, majority of coffee bean producers in Ethiopia, the country that produces highest quality coffee beans, is using the natural/dry method. This is explained by @Jori-Korhonen, "The natural process is common in regions where there is no access to water such as Ethiopia and some regions in Brazil."
+
+
 **Effect of processing method on its individual grading criteria**
 
 We picked 6 grading criteria, according to the coffee scoring article provided on [mycuppa](https://www.mycuppa.com.au/scoring-coffee):
