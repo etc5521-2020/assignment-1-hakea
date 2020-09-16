@@ -182,7 +182,7 @@ Secondary question:
 
 Coffee beans are harvested, produced and exported throughout almost every country in the world. This dataset contains the data of `r unique(coffee_ratings$country_of_origin)`. We will be focusing on the manufacturing and the quality aspect of the beans produced in this report. The two main variants of a coffee bean are Arabica and Robusta. Approximately 60% of coffee produced in the world is Arabica and approximately 40% is Robusta. Arabica beans consists about 0.8%-1.4% caffeine and Robusta beans  consists  of 1.7%-4% caffeine. Coffee is one of the most important cash crop in the world. [Wikipedia](https://en.wikipedia.org/wiki/Coffee_bean) 
 
-## Which Country produces the best quality coffee beans?
+### Which Country produces the best quality coffee beans?
 
 The Coffee Quality Institute is a non-profit organization that grades coffee samples from around the world in a consistent and professional manner.
 
@@ -216,15 +216,15 @@ ggplotly(q1)
 
 
 
-## What other factors that affect the quality of coffee beans?
+### What other factors that affect the quality of coffee beans?
 
 The dataset contains information about the coffee sample’s altitude of origin, variety, processing method and color. In this section, I examine if any of these characteristics correlate with the total cupping score.
 
-**Altitude v/s Quality**
+#### Altitude v/s Quality
 
-Here, I ran a model of the altitude of the sample and its total cupping score. The result is displayed in table \@ref(tab:alr-lrm). The p-value is lower then 0.05 which indicates that the model is statistically significant. The result shows a positive relationship between altitude and quality of coffee beans produced. However, it is worth to notice that the Adjusted R Square of the model is extremely small, only 0.022, or 2% (See Appendix 1), which suggest that the model is weak. 
+Here, I ran a model of the altitude of the sample and its total cupping score. The result is displayed in table \@ref(tab:alr-lrm) and figure \@ref(fig:alt-plot). The p-value is lower then 0.05 which indicates that the model is statistically significant. The result shows a positive relationship between altitude and quality of coffee beans produced. However, it is worth to notice that the Adjusted R Square of the model is extremely small, only 0.022, or 2% (See Appendix 1), which suggest that the model is very weak. Therefore, I tried Pearson correlation coefficient to examine the relationship between altitude and cupping points. As suggested by table \@ref(tab:pearson), there are no significant correlation. 
 
-
+There are some very interesting findings from \@ref(fig:alt-plot). For example, it seems that the majority of coffee samples were grown 750-2000m above sea levels. Also, the most of coffee beans seems to score very high,around 80-85 points.
 
 
 ```{r alt-lrm}
@@ -239,13 +239,30 @@ mutate_if(is.numeric, round, 5)%>%
 ```
 
 
-```{r alt-plot,  results='asis', fig.cap="Regression model for Altitude and Total cup points"}
+```{r alt-plot,  results='asis', fig.cap=" Altitude and Total cup points dot plot, blueline presents fitted regression model, redlines indicate present altitude of 750m and 2000m."}
 ggplot(data = coffee_clean_height, 
        aes(x = total_points, y = altitude_mean_meters)) +
   geom_point() +
-  geom_smooth(method = lm)
+  geom_smooth(method = lm) +
+  geom_hline(yintercept = 750, linetype="dashed", color = "red")+
+  geom_hline(yintercept = 2000, linetype="dashed", color = "red") +
+  ylab("Average altitude (meters)")+
+  xlab("Total Cupping Points")+
+  ggtitle("Altitude and Total Cupping Points")
 ```
 
+```{r pearson}
+res <- cor.test(coffee_clean$total_points,
+                as.numeric(coffee_clean$altitude_mean_meters),
+                method = "pearson") %>% broom::tidy() %>%
+  kable(caption = "Altitude v/s Quality stats") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+
+res
+
+
+```
 
 **Processing Method v/s Quality**
 
@@ -253,7 +270,7 @@ To check if the processing method affects the quality of coffee beans produced, 
 
 
 ```{r method-aov,echo=FALSE}
-one.way <- aov(total_cup_points ~ processing_method , data = coffee_ratings)
+one.way <- aov(total_points ~ method , data = coffee_clean)
 summary(one.way) 
 ```
 
@@ -494,6 +511,14 @@ alt_model %>% glance()
 
 
 # References
+
+- lubridate: @lubridate 
+- rmarkdown: @rmarkdown
+- tidyverse: @tidyverse 
+- kableExtra: @kableExtra 
+- ggplot2: @ggplot2 
+- plotly: @plotly 
+- bookdown: @bookdown 
 
 - The dataset was taken from (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-07/readme.md)
 
