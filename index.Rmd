@@ -39,7 +39,7 @@ Great coffee beans produce great coffee cup. The question is, what do we, coffee
 The data is originally observed from Coffee Quality Institute website and was scraped by [James DeLoux](https://github.com/jldbc/coffee-quality-database), the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, it is then cleaned by [Thomas Mock](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-07). 
 
 ## Data limitations
-The cleaned data set consists of 1339 observations and 43 variables. And some potential limitations are: 
+The cleaned data set consists of 1339 observations and 43 variables. There are some potential limitations are: 
 
 * As the number of graded coffee beans differ largely from country to country, some of the analysis will be biased. 
 
@@ -103,7 +103,7 @@ coffee_clean <- coffee_ratings %>%
   filter(total_points >20)
 ```
 
-```{r}
+```{r eda, eval = FALSE}
 # Check for outlier/ special cases
 
 ## Check variable country and total_points
@@ -129,9 +129,16 @@ ggplot(coffee_clean, aes(x = total_points,  y = altitude_mean_meters)) +
 coffee_clean_height <- coffee_clean %>%
   filter(altitude_mean_meters < 9000)
 
-# Date of harvest year
 ```
 
+```{r final-clean}
+coffee_clean <- coffee_clean %>%
+  mutate(country = replace(country, is.na(country), "Colombia"))
+coffee_clean_height <- coffee_clean %>%
+  filter(altitude_mean_meters < 9000)
+
+
+```
 
 ## Structure of data 
 
@@ -172,15 +179,12 @@ Secondary question:
 
 
 
-# Explatory Data Analysis
-
 Coffee beans are harvested, produced and exported throughout almost every country in the world. This dataset contains the data of `r unique(coffee_ratings$country_of_origin)`. We will be focusing on the manufacturing and the quality aspect of the beans produced in this report. The two main variants of a coffee bean are Arabica and Robusta. Approximately 60% of coffee produced in the world is Arabica and approximately 40% is Robusta. Arabica beans consists about 0.8%-1.4% caffeine and Robusta beans  consists  of 1.7%-4% caffeine. Coffee is one of the most important cash crop in the world. [Wikipedia](https://en.wikipedia.org/wiki/Coffee_bean) 
 
-## Which Country produces the best quality coffee beans, which regions perform better than others in the quality of the coffee beans produced, intra-country?
-
-**Country with best coffee beans**
+## Which Country produces the best quality coffee beans?
 
 The Coffee Quality Institute is a non-profit organization that grades coffee samples from around the world in a consistent and professional manner.
+
 
 The coffee beans are graded by the Coffee Quality Institute's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. 
 
@@ -205,71 +209,32 @@ ggplot(aes(x = country,
   ylab("Total ratings")+
   theme(plot.title = element_text(hjust = 0.5))
 
-  
-
 
 ggplotly(q1)
 ```
 
-**Leading regions**
-
-We use a barplot in `r figr("regions",TRUE,type = "Figure")`. The x-axis shows the total points a coffe bean recieves and the y-axis depicts the different regions where they were produced. The bars are coloured according to the country they belong to. Evidently Guji-Hambela is a region in Ethiopia where coffee beans get consistent good ratings and is the best region to grow coffee beans.
-
-On the other hand, the figure also indicate that out of top 10 average coffee bean rating regions, Ethiopia takes over 4 regions, which also correspond to the statement made previously that Ethiopia is the top country that produces quality coffee beans.
-
-```{r regions, anchor = "Figure", results='asis', message=FALSE,warning=FALSE, fig.cap="Best Regions for the quality of coffee beans",echo=FALSE}
-
-reg <- coffee_ratings %>% 
-  group_by(country_of_origin,region) %>% 
-  summarise(mean = mean(total_cup_points)) %>% 
-  arrange(desc(mean)) %>%
-  head(10)
-
-ggplot(reg,
-        aes(x = reorder(region, mean),
-            y = mean,
-            fill = country_of_origin)) + 
-  xlab("Region") +
-  ylab("Average coffee bean rating") +
-  geom_col() +
-  theme(axis.text.x = element_text(size = 10, angle = 90)) +
-  scale_fill_discrete(name="Country of Origin")
-```
-
-**Largest Producer**
-
-We also observe that Colombia is the largest producer of coffee beans Arabica variant with more than 40000 bags followed by Guatemala and Brazil. We establish using a bar-plot in `r figr("producer",TRUE,type = "Figure")` with y-axis representing the number of bags produced and x-axis representing different countries. The Figure shows the top-6 coffee bean producing countries.
-
-```{r producer, anchor = "Figure", results='asis', message=FALSE, warning=FALSE, fig.cap="Largest producer country-wise",echo=FALSE}
-
-highest_produce <- coffee_ratings %>% group_by(country_of_origin,species) %>% summarise(nob = sum(number_of_bags)) %>% arrange(desc(nob)) %>% head()
-
-ggplot(highest_produce, 
-       aes(x = reorder(country_of_origin, - nob), 
-           y = nob)) + 
-  geom_col(fill = "deepskyblue4") +
-  labs(x = "Country", y = "Number of bags produced") +
-  geom_text(label =  highest_produce$species)
-```
 
 
-## Using the regression model, explain how factors like altitude, processing method and defects affect the quality of the beans produced.
+## What other factors that affect the quality of coffee beans?
 
 **Altitude v/s Quality**
 
-In short, There is a slight, very very veryyyy small relation - Thomas
+The dataset contains information about the coffee sample’s altitude of origin, variety, processing method and color. In this section, I examine if any of these characteristics correlate with the total cupping score.
+
 
 ```{r alt-lrm, message=FALSE,warning=FALSE, echo=FALSE, eval = FALSE}
 #incomplete code, so the chunk is set to eval = FALSE temporarily
-temp <-  lm(total_points ~ altitude_mean_meters, a) %>%
+temp <-  lm(total_points ~ altitude_mean_meters, coffee_clean_height) %>% 
 broom::tidy() %>%
 mutate_if(is.numeric, round, 5)
-summary(temp)
-temp
-  round(temp$p.value,2)
+
+temp %>%
   kable(caption = "Altitude v/s Quality stats") %>% 
   kable_styling(bootstrap_options = c("striped", "hover"))
+
+
 ```
+
 
 ```{r alt-plot, anchor = "Figure", results='asis', fig.cap="Regression model for Altitude", echo=FALSE,warning=FALSE,message=FALSE}
 ggplot(data = coffee_clean_height, 
@@ -278,11 +243,6 @@ ggplot(data = coffee_clean_height,
   geom_smooth(method = lm)
 ```
 
-```{r cor-test, eval=FALSE, warning=FALSE, message=FALSE,echo=FALSE}
-#alternate verification for altitude
-res <- cor.test(coffee_ratings$total_cup_points, as.numeric(coffee_ratings$altitude)) %>% broom::tidy()
-res
-```
 
 **Processing Method v/s Quality**
 
@@ -519,6 +479,9 @@ The scatterplot matrix \@ref(fig:q5p2) examines the relationship between each gr
 * A bunch of coffee beans processed with "Washed/Wet" method have relatively lower aftertaste grade.
 
 Overall, we can observe that the "Washed/Wet" method have relatively more variations compared to other method, and the plot \@ref(fig:q5p2) also indicates the primary processing method are "Washed/Wet" and "Natural/Dry" across all coffee bean producers.And we can barely capture the appearance of other two methods.
+
+# Appendix 
+## Appendix 1. Summary table for model
 
 
 
