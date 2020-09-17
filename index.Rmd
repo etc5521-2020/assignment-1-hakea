@@ -5,8 +5,8 @@ team: Hakea
 author:
   - Dang Thanh Nguyen
   - Rui Min Lin
-  - (Siddhant V Tirodkar)
-  - (Varsha Ujjinni Vijay Kumar)
+  - Siddhant V Tirodkar
+  - Varsha Ujjinni Vijay Kumar
 date: "`r Sys.Date()`"
 output: 
   bookdown::html_document2: 
@@ -22,9 +22,6 @@ link-citations: yes
    
 
 ---
-
-[This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
-
 
 # Introduction 
 
@@ -72,8 +69,7 @@ Although the dataset was properly cleaned and wrangled by the original author, t
 
 2. There are several missing values in the dataset. In order to be more accurate at our research, we tried to fill some critical information that can affect our data. 
 
-Based on the data limitations and 
-
+Based on this, the data set was cleaned again to produce the most accurate analysis possible.
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
@@ -189,16 +185,14 @@ Secondary question:
 
 2. Do factors like altitude, processing method and defects affect the quality of the coffee?
 
-3. Which countries perform best on individual grading criteria such as aroma, acidity, sweetness etc?
+3. Are coffee graders consistent with their grading across years, months and days of the week? (NEW)
 
-4. The quality of coffee developed overtime. (NEW)
-
-5. What is the common processing method of top-graded coffee beans, how different processing method behaves on the individual grading criteria of coffee? (NEW)
+4. What is the common processing method of top-graded coffee beans, how different processing method behaves on the individual grading criteria of coffee? (NEW)
 
 
+# Analysis and Findings
 
-
-### Which Country produces the best quality coffee beans?
+## Which Country produces the best quality coffee beans?
 
 
 Figure \@ref(fig:q1) aims to address the primary question **Which country produces best quality coffee beans?**. X axis shows the country while Y axis denotes the overall rating achieved by the coffee bean. It is clear that Ethiopia produced the highest quality of coffee beans. However, it is interesting to note that there is not much variation between countries as most of them have median score of around 80-85 points. Thus, We can conclude that based on the dataset, there is not much difference in coffee quality between countries, with Ethipoia produces the highest-quality beans.
@@ -228,19 +222,18 @@ ggplotly(q1)
 
 
 
-### What other factors that affect the quality of coffee beans?
+## What other factors that affect the quality of coffee beans?
 
 The dataset contains information about the coffee sample’s altitude of origin, variety, processing method and color. In this section, I examine if any of these characteristics correlate with the total cupping score.
 
-#### Altitude v/s Quality
+### Altitude v/s Quality
 
-In this section, our team ran a model of the altitude of the sample and its total cupping score. The result is displayed in table \@ref(tab:alr-lrm) and figure \@ref(fig:alt-plot). The p-value is lower then 0.05 which indicates that the model is statistically significant. The result shows a positive relationship between altitude and quality of coffee beans produced. However, it is worth to notice that the Adjusted R Square of the model is extremely small, only 0.022, or 2% (See table \@ref(tab:glance), Appendix 1), which suggest that the model is very weak. Therefore, I tried another method which is Pearson correlation coefficient to examine the relationship between altitude and cupping points. As suggested by table \@ref(tab:pearson), there are no significant correlation. 
+In this section, our team ran a model of the altitude of the sample and its total cupping score. The result is displayed in table \@ref(tab:alt-lrm) and figure \@ref(fig:alt-plot). The p-value is lower then 0.05 which indicates that the model is statistically significant. The result shows a positive relationship between altitude and quality of coffee beans produced. However, it is worth to notice that the Adjusted R Square of the model is extremely small, only 0.022, or 2% (See table \@ref(tab:glance), Appendix 1), which suggest that the model is very weak. Therefore, I tried another method which is Pearson correlation coefficient to examine the relationship between altitude and cupping points. As suggested by table \@ref(tab:pearson), there are no significant correlation. 
 
 There are some very interesting findings from \@ref(fig:alt-plot). For example, it seems that the majority of coffee samples were grown 750-2000m above sea levels. Also, the most of coffee beans seems to score very high,around 80-85 points.
 
 
 ```{r alt-lrm}
-#incomplete code, so the chunk is set to eval = FALSE temporarily
 alt_model <-  lm(total_points ~ altitude_mean_meters, coffee_clean_height) 
 
 alt_model %>% broom::tidy() %>%
@@ -276,7 +269,7 @@ res
 
 ```
 
-**Processing Method v/s Quality**
+### Processing Method v/s Quality
 
 To check if the processing method affects the quality of coffee beans produced, we have taken help of the ANOVA test as the processing method is a categorical variable. The ANOVA test returns p-values very far away from the confidence interval of 5% which can be observed when we plot the residuals against the fitted values in `r figr("one-way",TRUE,type = "Figure")` . Hence it is established that the processing methods used in producing the coffee beans does not influence the quality of beans produced.
 
@@ -290,7 +283,7 @@ summary(one.way)
 plot(one.way, which = 1, col = c("blue"))
 ```
 
-**Defects v/s Quality**
+### Defects v/s Quality
 
 After the linear model for altitude turned out to be insignificant, we figured there are several other variables in the dataset that we could try fitting a model. The dataset contains category one and category two defects which are also known as primary and secondary defects and we fitted a muti-variate model using the same. The model after considering both the variables return a p-value very close to 0 and hence this model is considered a good one and as can be seen in `r figr("def-plot",TRUE,type = "Figure")` which suggest that almost all the residuals reside very close to the 0 line with a very few outliers. Thus it can be understood that defects influence the quality of coffee beans produced.
 
@@ -306,9 +299,9 @@ ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 
 
 
-## What is the trend in grading date? (NEW)
+## What is the trend in grading date? 
 
-```{r date}
+```{r date_time}
 
 coffee_clean_date <- coffee_clean %>% 
   mutate(date = mdy(grading_date),
@@ -333,39 +326,55 @@ coffee_date_plot <- function(data, col){
 
 ```
 
-``` {r p-year}
-p1 <- coffee_clean_date %>% 
-  coffee_date_plot(year) +
-  xlab(year)+
-  ggtitle("Mean Total Score by year")+
-  theme(plot.title = element_text(hjust = 0.5))
-
-p1
-```
-
-```{r p-month}
-p2 <- coffee_clean_date %>% 
-  coffee_date_plot(month) +
-  xlab("Month")+
-  ggtitle("Mean Total Score by month")+
-  theme(plot.title = element_text(hjust = 0.5))
-
-p2
-
-```
 
 
-```{r p-date}
+While waiting for my lovely cup of coffee to brew, one of the researcher happened to read a interesting research @judge that has found correlation between a parole case’s success rate and whether the case was heard right before or after lunch. The idea is that judges might be more exhaused before lunch, which would make them stricter. Enlightened, he wanted to see if there is anything similar happen in coffee grading. Are graders stricter on Friday compared to Monday?
+
+
+```{r p-date, fig.cap = "Mean total cup scores by week day. The average point stay stable throughout the week"}
 p3 <- coffee_clean_date %>% 
   coffee_date_plot(wday) +
   xlab("Day")+
-  ggtitle("Mean Total Score by day")+
+  ggtitle("Mean Total Score by Weekday")+
   theme(plot.title = element_text(hjust = 0.5))
 
-p3
+ggplotly(p3)
 
 
 ```
+
+**The answer seems to be No.**
+
+From figure \@ref(fig:p-date), it seems that coffee graders seem to be consistent with their grading accross the weeks.
+
+But, does this trend stay true accross years and months? Figure \@ref(fig:p-month-year) answer that question. The figure suggest that the score remain stable throughout months and years.
+
+From the previous findings, the researchers conclude that coffee graders seem to be consistent with their grading across years, months and days of the week. On that ground, it is safe to say that coffee seems to be consistent in quality throughout the years.
+
+
+``` {r p-month-year, fig.cap = "Mean total cup score per grading year and month"}
+p1 <- coffee_clean_date %>% 
+  coffee_date_plot(year) +
+  xlab("Year")+
+  ggtitle("Mean Total Score by year")+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 30))
+
+
+p2 <- coffee_clean_date %>% 
+  coffee_date_plot(month) +
+  xlab("Month")+
+  ylab("")+
+  ggtitle("Mean Total Score by month")+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 30))
+  
+
+grid.arrange(p1,p2, ncol =2)
+
+```
+
+
 ## What is the common processing method of top-graded coffee beans, how different processing method behaves on the individual grading criteria of coffee? (NEW)
 
 **Processing Method amongst best-graded coffee beans**
@@ -454,23 +463,17 @@ The scatterplot matrix \@ref(fig:q5p2) examines the relationship between each gr
 Overall, we can observe that the "Washed/Wet" method have relatively more variations compared to other method, and the plot \@ref(fig:q5p2) also indicates the primary processing method are "Washed/Wet" and "Natural/Dry" across all coffee bean producers.And we can barely capture the appearance of other two methods.
 
 
+## Bonus: Country's coffee profile
 
-
-
-
-
-
-## Country's coffee profile
-
-To check which criteria the top 5 countries perform best in we have used radar charts from `r figr("Eth-radar",TRUE,type = "Figure")` onwards. A radar chart is a useful way to depict multi-variate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. The top-5 coffee bean producing countries according to our analysis are Ethiopia, Brazil, United States, Indonesia and Peru.
+In this section, we provide radar charts of five countries from accross the world: Ethiopia, Unitd Statets, Brazil, Peru and Indonesia. A radar chart is a useful way to depict multi-variate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. 
 
 
 ```{r mean,message=FALSE,warning=FALSE,echo=FALSE}
 
-coffee_ratings %>% 
-  filter(country_of_origin== c("Ethiopia","United States","Brazil", "Peru", "Indonesia")) %>% 
-  select(aroma, flavor,aftertaste,acidity,body,balance,uniformity,clean_cup,sweetness,cupper_points, moisture, total_cup_points, country_of_origin) %>%  
-  group_by(country_of_origin) %>% 
+coffee_clean %>% 
+  filter(country %in% c("Ethiopia","US","Brazil", "Peru", "Indonesia")) %>% 
+  select(aroma, flavor,aftertaste,acidity,body,balance,uniformity,clean_cup,sweetness,cupper_points, moisture, total_points, country) %>%  
+  group_by(country) %>% 
   summarise(ma = mean(aroma), mfl= mean(flavor), maf = mean(aftertaste), mac = mean(acidity), mb = mean(body),mba = mean(balance),mu = mean(uniformity), mc = mean(clean_cup), ms = mean(sweetness), mcu = mean(cupper_points), mm = mean(moisture)) %>% 
   kable(caption = "Means for different Individual grading criterias") %>% kable_styling()
 ```
