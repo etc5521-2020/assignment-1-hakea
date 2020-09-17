@@ -39,11 +39,11 @@ The Coffee Quality Institute is a non-profit organization that grades coffee sam
 The coffee beans are graded by the Coffee Quality Institute's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. 
 
 ## Dataset source
-The data is originally observed from Coffee Quality Institute website and was scraped by [James DeLoux](https://github.com/jldbc/coffee-quality-database), the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, it is then cleaned by [Thomas Mock](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-07). 
+The data is originally observed from Coffee Quality Institute website and was scraped by [James DeLoux](https://github.com/jldbc/coffee-quality-database), the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, [Thomas Mock](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-07) did the initial cleaning for the scraped data. 
 
 
 ## Data limitations
-The cleaned data set consists of 1339 observations and 43 variables. There are some potential limitations are: 
+The cleaned data set consists of 1339 observations and 43 variables. Some potential limitations are identified: 
 
 * As the number of graded coffee beans differ largely from country to country, some of the analysis will be biased. 
 
@@ -156,7 +156,7 @@ coffee_clean_height <- coffee_clean %>%
 
 ## Structure of data 
 
-After this knowing what each of those variables define with respect to our topic is important so below is the description of variables included in the data set:
+After the cleaning procedure, knowing what each of those variables define with respect to our topic is important so below is the description of variables included in the data set:
 
 ```{r datadesc-table}
 tb <- tibble(
@@ -195,7 +195,9 @@ Secondary question:
 ## Which Country produces the best quality coffee beans?
 
 
-Figure \@ref(fig:q1) aims to address the primary question **Which country produces best quality coffee beans?**. X axis shows the country while Y axis denotes the overall rating achieved by the coffee bean. It is clear that Ethiopia produced the highest quality of coffee beans. However, it is interesting to note that there is not much variation between countries as most of them have median score of around 80-85 points. Thus, We can conclude that based on the dataset, there is not much difference in coffee quality between countries, with Ethipoia produces the highest-quality beans.
+Figure \@ref(fig:q1) aims to address the primary question **Which country produces best quality coffee beans?**. X axis shows the overall rating achieved by the coffee bean while Y axis denotes the country where it produced. 
+
+It is clear that Ethiopia produced the highest quality of coffee beans. However, it is interesting to note that there is not much variation between countries as most of them have median score of around 80-85 points. Thus, We can conclude based on the dataset, that there is not much difference in coffee quality between countries, with Ethipoia produces the highest-quality beans.
 
 ```{r q1, results='asis', fig.cap="Boxplot for total ratings of coffee beans of country with at least 5 coffee samples."}
 # Get countries that have more then 5 beans graded
@@ -224,13 +226,13 @@ ggplotly(q1)
 
 ## What other factors that affect the quality of coffee beans?
 
-The dataset contains information about the coffee sample’s altitude of origin, variety, processing method and color. In this section, I examine if any of these characteristics correlate with the total cupping score.
+The dataset contains information about the coffee sample’s altitude of origin, variety, processing method and color. In this section, I'll examine whether any of these characteristics correlate with the total cupping score.
 
 ### Altitude v/s Quality
 
-In this section, our team ran a model of the altitude of the sample and its total cupping score. The result is displayed in table \@ref(tab:alt-lrm) and figure \@ref(fig:alt-plot). The p-value is lower then 0.05 which indicates that the model is statistically significant. The result shows a positive relationship between altitude and quality of coffee beans produced. However, it is worth to notice that the Adjusted R Square of the model is extremely small, only 0.022, or 2% (See table \@ref(tab:glance), Appendix 1), which suggest that the model is very weak. Therefore, I tried another method which is Pearson correlation coefficient to examine the relationship between altitude and cupping points. As suggested by table \@ref(tab:pearson), there are no significant correlation. 
+In this section, our team ran a model for the altitude of the sample and its total cupping score. The result is displayed in table \@ref(tab:alt-lrm) and figure \@ref(fig:alt-plot). The p-value is lower then 0.05 which indicates that the model is statistically significant. The result shows a positive relationship between altitude and quality of coffee beans produced. However, it is worth to notice that the Adjusted R Square of the model is extremely small, only 0.022, or 2% (See table \@ref(tab:glance), Appendix 1), suggesting an extremely weak model, that only 2% of the variation is explained. Therefore, I tried another method which is Pearson correlation coefficient to examine the relationship between altitude and cupping points. As suggested by table \@ref(tab:pearson), there are no significant correlation. 
 
-There are some very interesting findings from \@ref(fig:alt-plot). For example, it seems that the majority of coffee samples were grown 750-2000m above sea levels. Also, the most of coffee beans seems to score very high,around 80-85 points.
+There are some very interesting findings from \@ref(fig:alt-plot). For example, it seems that the majority of coffee samples were grown 750-2000m above sea levels. Also, most of coffee beans seems to score very high, around 80-85 points.
 
 
 ```{r alt-lrm}
@@ -269,23 +271,12 @@ res
 
 ```
 
-### Processing Method v/s Quality
-
-To check if the processing method affects the quality of coffee beans produced, we have taken help of the ANOVA test as the processing method is a categorical variable. The ANOVA test returns p-values very far away from the confidence interval of 5% which can be observed when we plot the residuals against the fitted values in `r figr("one-way",TRUE,type = "Figure")` . Hence it is established that the processing methods used in producing the coffee beans does not influence the quality of beans produced.
-
-
-```{r method-aov,echo=FALSE}
-one.way <- aov(total_points ~ method , data = coffee_clean)
-summary(one.way) 
-```
-
-```{r one-way,anchor = "Figure", results='asis',fig.cap="ANOVA test for processing methods vs Quality",echo=FALSE}
-plot(one.way, which = 1, col = c("blue"))
-```
 
 ### Defects v/s Quality
 
-After the linear model for altitude turned out to be insignificant, we figured there are several other variables in the dataset that we could try fitting a model. The dataset contains category one and category two defects which are also known as primary and secondary defects and we fitted a muti-variate model using the same. The model after considering both the variables return a p-value very close to 0 and hence this model is considered a good one and as can be seen in `r figr("def-plot",TRUE,type = "Figure")` which suggest that almost all the residuals reside very close to the 0 line with a very few outliers. Thus it can be understood that defects influence the quality of coffee beans produced.
+After the linear model for altitude turned out to be insignificant, we figured there are several other variables in the dataset that we could try fitting a model. The dataset contains category one and category two defects which are also known as primary and secondary defects and we fitted a muti-variate model using the same. The model after considering both the variables return a p-value very close to 0 and hence this model is considered as significant and in `r figr("def-plot",TRUE,type = "Figure")` suggesting that almost all the residuals reside very close to the 0 line with a very few outliers. Overall, we conclude that defects influence the quality of coffee beans produced.
+
+However, what's the extent of the influence? Both R.squared (5.06%) and adjusted R squared (4.92%) tells that defects have minimal influence on the quality of coffee beans, that only 5% of variations in total cup points is explained by category one and category two defects.
 
 ```{r def-lrm, warning=FALSE,message=FALSE,echo=FALSE}
 defects <- lm(total_cup_points ~ category_one_defects + category_two_defects, coffee_ratings) 
@@ -297,6 +288,11 @@ d <- defects %>% broom::augment()
 ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 ```
 
+```{r glance-defects}
+defects %>% glance() %>%
+  kable(caption = "Defects v/s Quality, model summary") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
 
 
 ## What is the trend in grading date? 
@@ -328,7 +324,7 @@ coffee_date_plot <- function(data, col){
 
 
 
-While waiting for my lovely cup of coffee to brew, one of the researcher happened to read a interesting research @judge that has found correlation between a parole case’s success rate and whether the case was heard right before or after lunch. The idea is that judges might be more exhaused before lunch, which would make them stricter. Enlightened, he wanted to see if there is anything similar happen in coffee grading. Are graders stricter on Friday compared to Monday?
+While waiting for my lovely cup of coffee to brew, one of the researcher happened to read a interesting research @judge that has found correlation between a parole case’s success rate and whether the case was heard right before or after lunch. The idea is that judges might be more exhausted before lunch, which would make them stricter. Enlightened, he wanted to see if there is anything similar happen in coffee grading. Are graders stricter on Friday compared to Monday?
 
 
 ```{r p-date, fig.cap = "Mean total cup scores by week day. The average point stay stable throughout the week"}
@@ -345,9 +341,9 @@ ggplotly(p3)
 
 **The answer seems to be No.**
 
-From figure \@ref(fig:p-date), it seems that coffee graders seem to be consistent with their grading accross the weeks.
+From figure \@ref(fig:p-date), it seems that coffee graders seem to be consistent with their grading across the weeks.
 
-But, does this trend stay true accross years and months? Figure \@ref(fig:p-month-year) answer that question. The figure suggest that the score remain stable throughout months and years.
+But, does this trend stay true across years and months? Figure \@ref(fig:p-month-year) answer that question. The figure suggest that the score remain stable throughout months and years.
 
 From the previous findings, the researchers conclude that coffee graders seem to be consistent with their grading across years, months and days of the week. On that ground, it is safe to say that coffee seems to be consistent in quality throughout the years.
 
@@ -375,9 +371,9 @@ grid.arrange(p1,p2, ncol =2)
 ```
 
 
-## What is the common processing method of top-graded coffee beans, how different processing method behaves on the individual grading criteria of coffee? (NEW)
+## Common processing method of top-graded coffee beans, and its behaviour on the individual grading criteria. (NEW)
 
-**Processing Method amongst best-graded coffee beans**
+**Processing Method among top-graded coffee beans**
 
 ```{r q5p1, results='asis', fig.cap="Common processing method of top 30 coffee beans by country"}
 
@@ -418,10 +414,10 @@ pmtable %>%
   
 ```
 
-The barchart \@ref(fig:q5p1) demonstrates the frequency of processing method in top 30 coffee bean producers, we discovered that the producers in most countries is using washed/wet method to produce coffee beans, followed by natural/dry method. In addition, majority of coffee bean producers in Ethiopia, the country that produces highest quality coffee beans, is using the natural/dry method. This is explained by @Jori-Korhonen, "The natural process is common in regions where there is no access to water such as Ethiopia and some regions in Brazil."
+The bar chart \@ref(fig:q5p1) demonstrates the frequency of processing method in top 30 coffee bean producers, we discovered that the producers in most countries is using washed/wet method to produce coffee beans, followed by natural/dry method. In addition, majority of coffee bean producers in Ethiopia, the country that produces highest quality coffee beans, is using the natural/dry method. This is explained by @Jori-Korhonen, "The natural process is common in regions where there is no access to water such as Ethiopia and some regions in Brazil."
 
 
-**Behaviour of different processing method on the individual grading criteria of coffee**
+**Behavior of different processing method on the individual grading criteria of coffee**
 
 We picked 6 grading criteria, according to the coffee scoring article provided on [mycuppa](https://www.mycuppa.com.au/scoring-coffee):
 
@@ -452,20 +448,20 @@ q5p2
 
 The scatterplot matrix \@ref(fig:q5p2) examines the relationship between each grading criteria, and is differentiated by the processing method.
 
-* The scatterplot matrix demonstrates the correlation of grading criteria are positive to various extent.
+* The scatterplot matrix demonstrates the correlation of grading criterias are positive to various extent.
 
-* The density plot for acidity located on 1st row & 1st column indicates the method "Pulped natural/honey" have relatively low density compared to other processing method.
+* The density plot for acidity indicates the method "Pulped natural/honey" have relatively low density compared to other processing methods.
 
-* One thing to notify is that there are presence of outliers for "Washed/Wet" method in aroma grade (on 3rd column).
+* One thing to notify is that there are presence of outliers for "Washed/Wet" method for every column that relates to aroma grade.
 
 * A bunch of coffee beans processed with "Washed/Wet" method have relatively lower aftertaste grade.
 
-Overall, we can observe that the "Washed/Wet" method have relatively more variations compared to other method, and the plot \@ref(fig:q5p2) also indicates the primary processing method are "Washed/Wet" and "Natural/Dry" across all coffee bean producers.And we can barely capture the appearance of other two methods.
+Overall, we can observe that the "Washed/Wet" method have relatively more variations compared to other method, and the plot \@ref(fig:q5p2) also indicates the primary processing method are "Washed/Wet" and "Natural/Dry" across all coffee bean producers. And we can barely capture the appearance of other two methods.
 
 
 ## Bonus: Country's coffee profile
 
-In this section, we provide radar charts of five countries from accross the world: Ethiopia, Unitd Statets, Brazil, Peru and Indonesia. A radar chart is a useful way to depict multi-variate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. 
+In this section, we provide radar charts of five countries from across the world: Ethiopia, United States, Brazil, Peru and Indonesia. A radar chart is a useful way to depict multi-variate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. 
 
 
 ```{r mean,message=FALSE,warning=FALSE,echo=FALSE}
@@ -581,17 +577,25 @@ After looking at these plots, the conclusion drawn are as follows: The common ch
 
 # Conclusion 
 
+The reports find out that neither altitude, blah blah blah, affect the quality of coffee.
+Coffee beans from Ethiopia has the highest overall quality. However, the difference in coffee quality between countries is abysmal.
+There are almost no differences in Coffee quality across the years.
+
+In conclusion, neither country of origin, nor altitude, nor bla bla bla, ... does really have large impact on the quality ofcoffee. So, if you want to buy a bag of coffee, you should know about that and choose the coffee that best suited your taste bla bla bla
+Although we data scientists tend to have the habit of drinking coffee alone in the dept of night, coffee tastes better with a group of friends.
 
 # Appendix 
+
 ## Appendix 1. Summary of altitude model
 
-```{r glance}
+```{r glance-alt}
 alt_model %>% glance() %>%
   kable(caption = "Altitude v/s Quality, model summary") %>% 
   kable_styling(bootstrap_options = c("striped", "hover"))
 
 
 ```
+
 
 
 # References
