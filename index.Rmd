@@ -183,7 +183,7 @@ Secondary question:
 
 1. Which Country produces the best quality coffee beans? Are there any large difference in coffee quality worldwide?
 
-2. Do factors like altitude, processing method and defects affect the quality of the coffee?
+2. Do factors like altitude and defects affect the quality of the coffee?
 
 3. Are coffee graders consistent with their grading across years, months and days of the week? (NEW)
 
@@ -371,7 +371,7 @@ grid.arrange(p1,p2, ncol =2)
 ```
 
 
-## Common processing method of top-graded coffee beans, and its behaviour on the individual grading criteria. (NEW)
+## Explore on processing method of coffee beans
 
 **Processing Method among top-graded coffee beans**
 
@@ -577,11 +577,9 @@ After looking at these plots, the conclusion drawn are as follows: The common ch
 
 # Conclusion 
 
-The reports find out that neither altitude, blah blah blah, affect the quality of coffee.
-Coffee beans from Ethiopia has the highest overall quality. However, the difference in coffee quality between countries is abysmal.
-There are almost no differences in Coffee quality across the years.
+After a series of analysis on quality of coffee beans and coffee grading, we can now come up with suggestions for coffee lovers when planning to buy a premium bag of coffee beans. Surprisingly, from the data provided, factors like altitude and defects, only had a minimal influence on the quality of coffee bean (which contradicts to what we expected before the analysis). Good news is that, after a long development of coffee production, most of coffee beans seems to score very high,around 80-85 points. On the other hand, most observations does not have a consistent unit, e.g. altitude and weight of coffee bean bag, which did limits any further exploration on these variables.
 
-In conclusion, neither country of origin, nor altitude, nor bla bla bla, ... does really have large impact on the quality ofcoffee. So, if you want to buy a bag of coffee, you should know about that and choose the coffee that best suited your taste bla bla bla
+In conclusion, neither country of origin, nor altitude, nor defects really have large impact on the quality of coffee beans. So, if you want to buy a bag of coffee, you should know about that and choose the coffee that best suited your taste. A little tip here, if you're looking for fermented and wild flavors in the cup, coffee bean from Ethiopia (processed with Natural/Dry method) will be your first pick.
 Although we data scientists tend to have the habit of drinking coffee alone in the dept of night, coffee tastes better with a group of friends.
 
 # Appendix 
