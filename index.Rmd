@@ -85,6 +85,7 @@ library(bookdown)
 library(plotly)
 library(GGally)
 library(broom)
+library(lubridate)
 ```
 
 ```{r data, message=FALSE, warning=FALSE,include=FALSE}
@@ -309,11 +310,62 @@ ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
 
 ```{r date}
 
-coffee_clean_date 
+coffee_clean_date <- coffee_clean %>% 
+  mutate(date = mdy(grading_date),
+         year = year(date),
+         month = month(date, label = TRUE),
+         day = day(date),
+         wday = wday(date, label = TRUE, week_start = 1))
+```
 
+```{r date-function}
+# I'm lazy with the copy and paste, so I made function
+
+coffee_date_plot <- function(data, col){
+  data %>%
+    group_by({{col}}) %>%
+    summarise(mean_score = mean(total_points)) %>%
+    mutate(col = as.factor({{col}})) %>%
+    ggplot(aes(x = col, y = mean_score))+
+    geom_col(fill = "#6F4E37") +
+    ylab("Mean Scores")
+}
 
 ```
 
+``` {r p-year}
+p1 <- coffee_clean_date %>% 
+  coffee_date_plot(year) +
+  xlab(year)+
+  ggtitle("Mean Total Score by year")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+p1
+```
+
+```{r p-month}
+p2 <- coffee_clean_date %>% 
+  coffee_date_plot(month) +
+  xlab("Month")+
+  ggtitle("Mean Total Score by month")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+p2
+
+```
+
+
+```{r p-date}
+p3 <- coffee_clean_date %>% 
+  coffee_date_plot(wday) +
+  xlab("Day")+
+  ggtitle("Mean Total Score by day")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+p3
+
+
+```
 ## What is the common processing method of top-graded coffee beans, how different processing method behaves on the individual grading criteria of coffee? (NEW)
 
 **Processing Method amongst best-graded coffee beans**
