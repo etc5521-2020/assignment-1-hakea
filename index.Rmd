@@ -1,13 +1,12 @@
 ---
 title: "ETC5521 Assignment 2"
 subtitle: "What you should consider when buying a bag of coffee"
-team: Hakea
-authors:
+date: "`r Sys.Date()`"
+author:
   - Dang Thanh Nguyen
   - Rui Min Lin
   - Siddhant V Tirodkar
   - Varsha Ujjinni Vijay Kumar
-date: "`r Sys.Date()`"
 output: 
   bookdown::html_document2: 
     citation_package: biblatex
@@ -26,7 +25,7 @@ link-citations: yes
 
 <style type="text/css">
 h1 {
-color: #4d3627
+color: #5e422f
 }
 
 h2 {
@@ -49,11 +48,10 @@ h3.subtitle {
 }
 h4.author {
   color: black;
-  text-align: center;
+
 }
 h4.date {
   color: black;
-  text-align: center;
 }
 
 
@@ -72,7 +70,7 @@ Great coffee beans produce great coffee cup. The question is, what do we, coffee
 ## Data source
 The Coffee Quality Institute is a non-profit organization that grades coffee samples from around the world in a consistent and professional manner.
 
-The coffee beans are graded by the @coffeegrade2020's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. 
+The coffee beans are graded by the Coffee Quality Institute's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. [@coffeegrade2020] 
 
 ## Dataset source
 The data is originally observed from Coffee Quality Institute website and was scraped by @James2018, the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, @Mock2020 did the initial cleaning for the scraped data. 
@@ -87,15 +85,13 @@ The cleaned data set consists of 1339 observations and 43 variables. Some potent
 
 * There are outliers in data, which may require further cleaning before certain analysis can take place.
 
-* There are difference in scale system in the data. In detail, it is unclear whether the altitude of a farm was converted from meter to feet. 
-
 
 ## Data cleaning and wrangling
 
 ### Original cleaning
-Data wrangling and cleaning is crucial to produce an exploratory data analysis fluently. The original data is a data frame scraped by James LeDoux in January 2018 from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the data set by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc. On the other hand, there are two separate data set `raw_robusta` and `raw_arabica` originally. Thomas Mock first cleaned the variable names in both data set with function `janitor::clean_names`, and inappropriate data class is corrected using `col_double`, `col_character` etc. Variables like salt_acid, bitter_sweet, fragrance_aroma, mouthfeel, and uniform_cup is renamed to acidity, sweetness, aroma, body and uniformity respectively, to allow a better understanding for readers.
+Data wrangling and cleaning is crucial to produce an exploratory data analysis fluently. The original data is a data frame scraped by James LeDoux in January 2018 from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the data set by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc [@James2018]. @Mock2020 further cleaned the variable names in both data set with function `janitor::clean_names`, and inappropriate data class is corrected using `col_double`, `col_character` etc. Variables like salt_acid, bitter_sweet, fragrance_aroma, mouthfeel, and uniform_cup is renamed to acidity, sweetness, aroma, body and uniformity respectively, to allow a better understanding for readers.
 
-The data sets were then joined by implementing the function `bind_rows` to produce the merged data set, which is exported to a single csv file “coffee_ratings.csv” with 1339 observations and 43 variables. 
+Originally, there are two separate data set `raw_robusta` and `raw_arabica`. They were then joined by implementing the function `bind_rows` to produce the merged data set, which is exported to a single csv file “coffee_ratings.csv” with 1339 observations and 43 variables. 
 
 ### Further data cleaning
 
@@ -105,7 +101,7 @@ Although the dataset was properly cleaned and wrangled by the original author, t
 
 2. There are several missing values in the dataset. In order to be more accurate at our research, we tried to fill some critical information that can affect our data. 
 
-Based on this, the data set was cleaned again to produce the most accurate analysis possible.
+Based on issues, the data set was cleaned again to produce the most accurate analysis possible.
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
@@ -213,13 +209,13 @@ tb1
 
 ## Questions of interest
 
-The aim of this report is to discover the likely factors that influence coffee quality and taste. 
+The aim of this report is to discover the likely factors that influence coffee quality.
 
 Secondary question:
 
 1. Which Country produces the best quality coffee beans? Are there any large difference in coffee quality worldwide?
 
-2. Do factors like altitude and defects affect the quality of the coffee?
+2. What are the factors that affect the quality of coffee beans?
 
 3. Are coffee graders consistent with their grading across years, months and days of the week? (NEW)
 
@@ -260,7 +256,7 @@ ggplotly(q1)
 
 
 
-## What other factors that affect the quality of coffee beans?
+## What are the factors that affect the quality of coffee beans?
 
 The dataset contains information about the coffee sample’s altitude of origin, variety, processing method and color. In this section, I'll examine whether any of these characteristics correlate with the total cupping score.
 
@@ -331,86 +327,9 @@ defects %>% glance() %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-
-## What is the trend in grading date? 
-
-```{r date_time}
-
-coffee_clean_date <- coffee_clean %>% 
-  mutate(date = mdy(grading_date),
-         year = year(date),
-         month = month(date, label = TRUE),
-         day = day(date),
-         wday = wday(date, label = TRUE, week_start = 1))
-```
-
-```{r date-function}
-# I'm lazy with the copy and paste, so I made function
-
-coffee_date_plot <- function(data, col){
-  data %>%
-    group_by({{col}}) %>%
-    summarise(mean_score = mean(total_points)) %>%
-    mutate(col = as.factor({{col}})) %>%
-    ggplot(aes(x = col, y = mean_score))+
-    geom_col(fill = "#6F4E37") +
-    ylab("Mean Scores")
-}
-
-```
-
-
-
-While waiting for my lovely cup of coffee to brew, one of the researcher happened to read a interesting research @judge that has found correlation between a parole case’s success rate and whether the case was heard right before or after lunch. The idea is that judges might be more exhausted before lunch, which would make them stricter. Enlightened, he wanted to see if there is anything similar happen in coffee grading. Are graders stricter on Friday compared to Monday?
-
-
-```{r p-date, fig.cap = "Mean total cup scores by week day. The average point stay stable throughout the week"}
-p3 <- coffee_clean_date %>% 
-  coffee_date_plot(wday) +
-  xlab("Day")+
-  ggtitle("Mean Total Score by Weekday")+
-  theme(plot.title = element_text(hjust = 0.5))
-
-ggplotly(p3)
-
-
-```
-
-**The answer seems to be No.**
-
-From figure \@ref(fig:p-date), it seems that coffee graders seem to be consistent with their grading across the weeks.
-
-But, does this trend stay true across years and months? Figure \@ref(fig:p-month-year) answer that question. The figure suggest that the score remain stable throughout months and years.
-
-From the previous findings, the researchers conclude that coffee graders seem to be consistent with their grading across years, months and days of the week. On that ground, it is safe to say that coffee seems to be consistent in quality throughout the years.
-
-
-``` {r p-month-year, fig.cap = "Mean total cup score per grading year and month"}
-p1 <- coffee_clean_date %>% 
-  coffee_date_plot(year) +
-  xlab("Year")+
-  ggtitle("Mean Total Score by year")+
-  theme(plot.title = element_text(hjust = 0.5),
-        axis.text.x = element_text(angle = 30))
-
-
-p2 <- coffee_clean_date %>% 
-  coffee_date_plot(month) +
-  xlab("Month")+
-  ylab("")+
-  ggtitle("Mean Total Score by month")+
-  theme(plot.title = element_text(hjust = 0.5),
-        axis.text.x = element_text(angle = 30))
-  
-
-grid.arrange(p1,p2, ncol =2)
-
-```
-
-
 ## Explore on processing method of coffee beans
 
-**Processing Method among top-graded coffee beans**
+### Processing Method among top-graded coffee beans
 
 ```{r q5p1, results='asis', fig.cap="Common processing method of top 30 coffee beans by country"}
 
@@ -454,7 +373,7 @@ pmtable %>%
 The bar chart \@ref(fig:q5p1) demonstrates the frequency of processing method in top 30 coffee bean producers, we discovered that the producers in most countries is using washed/wet method to produce coffee beans, followed by natural/dry method. In addition, majority of coffee bean producers in Ethiopia, the country that produces highest quality coffee beans, is using the natural/dry method. This is explained by @Jori-Korhonen, "The natural process is common in regions where there is no access to water such as Ethiopia and some regions in Brazil."
 
 
-**Behavior of different processing method on the individual grading criteria of coffee**
+### *Behavior of different processing method on the individual grading criteria of coffee
 
 We picked 6 grading criteria, according to the coffee scoring article provided on @mycuppa:
 
@@ -495,6 +414,76 @@ The scatterplot matrix \@ref(fig:q5p2) examines the relationship between each gr
 * A bunch of coffee beans processed with "Washed/Wet" method have relatively lower aftertaste grade.
 
 Overall, we can observe that the "Washed/Wet" method have relatively more variations compared to other method, and the plot \@ref(fig:q5p2) also indicates the primary processing method are "Washed/Wet" and "Natural/Dry" across all coffee bean producers. And we can barely capture the appearance of other two methods.
+
+
+## What is the trend in grading date? 
+
+```{r date_time}
+
+coffee_clean_date <- coffee_clean %>% 
+  mutate(date = mdy(grading_date),
+         year = year(date),
+         month = month(date, label = TRUE),
+         day = day(date),
+         wday = wday(date, label = TRUE, week_start = 1))
+```
+
+```{r date-function}
+# I'm lazy with the copy and paste, so I made function
+
+coffee_date_plot <- function(data, col){
+  data %>%
+    group_by({{col}}) %>%
+    summarise(mean_score = mean(total_points)) %>%
+    mutate(col = as.factor({{col}})) %>%
+    ggplot(aes(x = col, y = mean_score))+
+    geom_col(fill = "#6F4E37") +
+    ylab("Mean Scores")
+}
+
+```
+
+While waiting for his lovely cup of coffee to brew, one of the researcher happened to read a interesting research @judge that has found correlation between a parole case’s success rate and whether the case was heard right before or after lunch. The idea is that judges might be more exhausted before lunch, which would make them stricter. Enlightened, he wanted to see if there is anything similar happen in coffee grading. Are graders stricter on Friday compared to Monday?
+
+
+```{r p-date, fig.cap = "Mean total cup scores by week day. The average point stay stable throughout the week"}
+p3 <- coffee_clean_date %>% 
+  coffee_date_plot(wday) +
+  xlab("Day")+
+  ggtitle("Mean Total Score by Weekday")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplotly(p3)
+
+
+```
+
+**The answer seems to be No.**
+
+From figure \@ref(fig:p-date), it seems that coffee graders seem to be consistent with their grading across the weeks.
+
+But, does this trend stay true across years and months? Figure \@ref(fig:p-month-year) answer that question. The figure suggest that the score remain stable throughout months and years.
+
+From the previous findings, the researchers conclude that coffee graders seem to be consistent with their grading across years, months and days of the week. On that ground, it is safe to say that coffee seems to be consistent in quality throughout the years.
+
+
+``` {r p-month-year, fig.cap = "Mean total cup score per grading year and month"}
+p1 <- coffee_clean_date %>% 
+  coffee_date_plot(year) +
+  xlab("Year")+
+  ggtitle("Mean Total Score by Year")+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 30))
+p2 <- coffee_clean_date %>% 
+  coffee_date_plot(month) +
+  xlab("Month")+
+  ylab("")+
+  ggtitle("Mean Total Score by Month")+
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.x = element_text(angle = 30))
+
+grid.arrange(p1,p2, ncol =2)
+```
 
 
 ## Bonus: Country's coffee profile
@@ -619,6 +608,9 @@ After a series of analysis on quality of coffee beans and coffee grading, we can
 
 In conclusion, neither country of origin, nor altitude, nor defects really have large impact on the quality of coffee beans. So, if you want to buy a bag of coffee, you should keep that in mind and instead choose the coffee that best suited your taste. A little tip here, if you're looking for fermented and wild flavors in the cup, coffee bean from Ethiopia (processed with Natural/Dry method) will surely satisfy you.
 
+
+
+
 # Appendix 
 
 ## Appendix 1. Summary of altitude model
@@ -631,6 +623,21 @@ alt_model %>% glance() %>%
 
 ```
 
+## Appendix 2. Bonus on coffee processing method:
+Coffee processing are very interesing, here I have found a couple of videos for you:
+
+Medium-length video(4-6 minutes):
+
+[Natural coffee processing](https://www.youtube.com/watch?v=yagagM7SlWs), the traditional way to process coffee.
+
+[Washed coffee processing](https://www.youtube.com/watch?v=Az0W61hotLM), another very common way to process coffee.
+
+[Wet-Hulled/ Semi-washed Coffee Processing](https://www.youtube.com/watch?v=R1z4omBqYxQ), it is not very popular, developed for humid, less sunny climate.
+
+
+[Honey Coffee Processing](https://www.youtube.com/watch?v=k5iw31z1FAY), a new processing method. It is becoming more common, especially in Central America.
+
+Lastly, I know that we are all have the habit of drinking coffee alone, maybe in the dark of night. Afterall, how can one finish one's study without countless cup of coffee and sleepless nights? However, remember that coffee taste better enjoying with friends. So, Would you like a cup of coffee?
 
 
 # References
