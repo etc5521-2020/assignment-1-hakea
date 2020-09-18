@@ -59,7 +59,7 @@ h4.date {
 
 # Introduction 
 
-People drink coffee for various reasons: Either to warm their soul in a chilling morning, or to stay awake and focus after a long, restless night. Whatever the reason is, it is clear that we love the dark, fragrance liquid. Some people loves coffee for its pleasant aroma. Some others loves its unique flavor notes. Some simply loves it because it is as black as their soul.  But most would agree that nothing is better than a cup of great coffee to start a wonderful, productive day.
+People drink coffee for various reasons: either to warm their soul in a chilling morning, or to stay awake and focus after a long, restless night. Whatever the reason is, it is clear that we love the dark, fragrance liquid. Some people loves coffee for its pleasant aroma. Some others loves its unique flavor notes. Some simply loves it because it is as black as their soul. But most would agree that nothing is better than a cup of great coffee to start a wonderful, productive day.
  
 Great coffee beans produce great coffee cup. The question is, what do we, coffee lovers, should consider when planning to buy a premium bag of the charming black beans?  Hence, in this report. We will have a journey to the place where the coffee trees were raised and the beans were harvested, to see what affects the quality of our beloved coffee.
 
@@ -70,7 +70,7 @@ Great coffee beans produce great coffee cup. The question is, what do we, coffee
 ## Data source
 The Coffee Quality Institute is a non-profit organization that grades coffee samples from around the world in a consistent and professional manner.
 
-The coffee beans are graded by the Coffee Quality Institute's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. [@coffeegrade2020] 
+The coffee beans are graded by the Coffee Quality Institute's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavor, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. [@coffeegrade2020] 
 
 ## Dataset source
 The data is originally observed from Coffee Quality Institute website and was scraped by @James2018, the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, @Mock2020 did the initial cleaning for the scraped data. 
@@ -89,6 +89,7 @@ The cleaned data set consists of 1339 observations and 43 variables. Some potent
 ## Data cleaning and wrangling
 
 ### Original cleaning
+
 Data wrangling and cleaning is crucial to produce an exploratory data analysis fluently. The original data is a data frame scraped by James LeDoux in January 2018 from the Coffee Quality Institute website which has a few missing values columns within it, so the author has cleaned the data set by removing the variables:  “view_certificate_1”, “view_certificate_2”,etc [@James2018]. @Mock2020 further cleaned the variable names in both data set with function `janitor::clean_names`, and inappropriate data class is corrected using `col_double`, `col_character` etc. Variables like salt_acid, bitter_sweet, fragrance_aroma, mouthfeel, and uniform_cup is renamed to acidity, sweetness, aroma, body and uniformity respectively, to allow a better understanding for readers.
 
 Originally, there are two separate data set `raw_robusta` and `raw_arabica`. They were then joined by implementing the function `bind_rows` to produce the merged data set, which is exported to a single csv file “coffee_ratings.csv” with 1339 observations and 43 variables. 
@@ -97,11 +98,11 @@ Originally, there are two separate data set `raw_robusta` and `raw_arabica`. The
 
 Although the dataset was properly cleaned and wrangled by the original author, there are still some issues in the dataset:
 
-1. There are anomalies in the data. In detail, there are some coffee beans were grown at the height of more than 11,000 meters. Given that the highest point on Earth is only 8,848 meters above sea level, those observations are inaccurate. 
+1. There are anomalies in the data. In detail, the dataset records that some coffee beans were grown at the height of more than 11,000 meters. Given that the highest point on Earth is only 8,848 meters above sea level, those observations are inaccurate. 
 
 2. There are several missing values in the dataset. In order to be more accurate at our research, we tried to fill some critical information that can affect our data. 
 
-Based on issues, the data set was cleaned again to produce the most accurate analysis possible.
+Based on the issues, the data set was cleaned again to produce the most accurate analysis possible.
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
@@ -188,7 +189,7 @@ coffee_clean_height <- coffee_clean %>%
 
 ## Structure of data 
 
-After the cleaning procedure, knowing what each of those variables define with respect to our topic is important so below is the description of variables included in the data set:
+After the cleaning procedure, knowing what each of those variables define with respect to our topic is important, so below is the description of variables included in the data set:
 
 ```{r datadesc-table}
 tb <- tibble(
@@ -227,9 +228,9 @@ Secondary question:
 ## Which Country produces the best quality coffee beans?
 
 
-Figure \@ref(fig:q1) aims to address the primary question **Which country produces best quality coffee beans?**. X axis shows the overall rating achieved by the coffee bean while Y axis denotes the country where it produced. 
+Figure \@ref(fig:q1) aims to address the primary question **Which country produces best quality coffee beans?**. X-axis shows the overall rating achieved by the coffee bean while Y-axis denotes the country where it produced. 
 
-It is clear that Ethiopia produced the highest quality of coffee beans. However, it is interesting to note that there is not much variation between countries as most of them have median score of around 80-85 points. Thus, We can conclude based on the dataset, that there is not much difference in coffee quality between countries, with Ethipoia produces the highest-quality beans.
+It is clear that Ethiopia produced the highest quality of coffee beans. However, it is interesting to note that there is not much variation between countries as most of them have median score of around 80-85 points. Thus, We can conclude based on the dataset, that there is not much difference in coffee quality between countries, with Ethiopia produces the highest-quality beans.
 
 ```{r q1, results='asis', fig.cap="Boxplot for total ratings of coffee beans of country with at least 5 coffee samples."}
 # Get countries that have more then 5 beans graded
@@ -258,7 +259,7 @@ ggplotly(q1)
 
 ## What are the factors that affect the quality of coffee beans?
 
-The dataset contains information about the coffee sample’s altitude of origin, variety, processing method and color. In this section, I'll examine whether any of these characteristics correlate with the total cupping score.
+The dataset contains information about the coffee sample’s altitude of origin, variety, and color. In this section, I'll examine whether any of these characteristics correlate with the total cupping score.
 
 ### Altitude v/s Quality
 
@@ -306,7 +307,7 @@ res
 
 ### Defects v/s Quality
 
-After the linear model for altitude turned out to be insignificant, we figured there are several other variables in the dataset that we could try fitting a model. The dataset contains category one and category two defects which are also known as primary and secondary defects and we fitted a muti-variate model using the same. The model after considering both the variables return a p-value very close to 0 and hence this model is considered as significant and in `r figr("def-plot",TRUE,type = "Figure")` suggesting that almost all the residuals reside very close to the 0 line with a very few outliers. Overall, we conclude that defects influence the quality of coffee beans produced.
+After the linear model for altitude turned out to be insignificant, we figured there are several other variables in the dataset that we could try fitting a model. The dataset contains category one and category two defects which are also known as primary and secondary defects and we fitted a multivariate model using the same. The model after considering both the variables return a p-value very close to 0 and hence this model is considered as significant and in `r figr("def-plot",TRUE,type = "Figure")` suggesting that almost all the residuals reside very close to the 0 line with a very few outliers. Overall, we conclude that defects influence the quality of coffee beans produced.
 
 However, what's the extent of the influence? Both R.squared (5.06%) and adjusted R squared (4.92%) tells that defects have minimal influence on the quality of coffee beans, that only 5% of variations in total cup points is explained by category one and category two defects.
 
@@ -373,13 +374,13 @@ pmtable %>%
 The bar chart \@ref(fig:q5p1) demonstrates the frequency of processing method in top 30 coffee bean producers, we discovered that the producers in most countries is using washed/wet method to produce coffee beans, followed by natural/dry method. In addition, majority of coffee bean producers in Ethiopia, the country that produces highest quality coffee beans, is using the natural/dry method. This is explained by @Jori-Korhonen, "The natural process is common in regions where there is no access to water such as Ethiopia and some regions in Brazil."
 
 
-### *Behavior of different processing method on the individual grading criteria of coffee
+### Behavior of different processing method on the individual grading criteria of coffee
 
 We picked 6 grading criteria, according to the coffee scoring article provided on @mycuppa:
 
 * Aroma
 * Aftertaste
-* Flavour
+* Flavor
 * Acidity
 * Body
 * Balance
@@ -405,7 +406,7 @@ q5p2
 
 The scatterplot matrix \@ref(fig:q5p2) examines the relationship between each grading criteria, and is differentiated by the processing method.
 
-* The scatterplot matrix demonstrates the correlation of grading criterias are positive to various extent.
+* The scatterplot matrix demonstrates the correlation of grading criteria are positive to various extent.
 
 * The density plot for acidity indicates the method "Pulped natural/honey" have relatively low density compared to other processing methods.
 
@@ -488,7 +489,7 @@ grid.arrange(p1,p2, ncol =2)
 
 ## Bonus: Country's coffee profile
 
-In this section, we provide radar charts of five countries from across the world: Ethiopia, United States, Brazil, Peru and Indonesia. A radar chart is a useful way to depict multi-variate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. 
+In this section, we provide radar charts for five countries from across the world: Ethiopia, United States, Brazil, Peru and Indonesia. A radar chart is a useful way to depict multivariate observations. Each criteria is rated out of a total 10 points and all the 10 criteria are plotted together on the radar chart along with moisture percentage to understand how a particular country performs on individual criteria. 
 
 
 ```{r mean,message=FALSE,warning=FALSE,echo=FALSE}
@@ -604,7 +605,7 @@ After looking at these plots, the conclusion drawn are as follows: The common ch
 
 # Conclusion 
 
-After a series of analysis on quality of coffee beans and coffee grading, we can now come up with suggestions for coffee lovers when planning to buy a premium bag of coffee beans. Surprisingly, from the data provided, factors like altitude and defects, had almost no influence on the quality of coffee bean (which contradicts to what we expected before the analysis). Good news is that, after a long development of coffee production, coffee quality seems to score very high,around 80-85 points across the world. 
+After a series of analysis on quality of coffee beans and coffee grading, we can now come up with suggestions for coffee lovers when planning to buy a premium bag of coffee beans. Surprisingly, from the data provided, factors like altitude and defects, had almost no influence on the quality of coffee bean (which contradicts to what we expected before the analysis). We find that the data records various unrealistic observations in the variables like `altitude`, we trimmed them out to ensure the accuracy of our analysis. After the unexpected, here's the good news finally, majority of coffee's quality seems to score very high, around 80-85 points across the world due to its long development of coffee production. 
 
 In conclusion, neither country of origin, nor altitude, nor defects really have large impact on the quality of coffee beans. So, if you want to buy a bag of coffee, you should keep that in mind and instead choose the coffee that best suited your taste. A little tip here, if you're looking for fermented and wild flavors in the cup, coffee bean from Ethiopia (processed with Natural/Dry method) will surely satisfy you.
 
