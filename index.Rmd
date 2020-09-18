@@ -36,10 +36,10 @@ Great coffee beans produce great coffee cup. The question is, what do we, coffee
 ## Data source
 The Coffee Quality Institute is a non-profit organization that grades coffee samples from around the world in a consistent and professional manner.
 
-The coffee beans are graded by the Coffee Quality Institute's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. 
+The coffee beans are graded by the @coffeegrade2020's trained reviewers. The total rating of a coffee bean is a cumulative sum of 10 individual quality measures: aroma, flavour, aftertaste, acidity, body, balance, uniformity, clean cup, sweetness and cupper points. Each grade is on a 0–10 scale resulting to a total cupping score between zero and one hundred. 
 
 ## Dataset source
-The data is originally observed from Coffee Quality Institute website and was scraped by [James DeLoux](https://github.com/jldbc/coffee-quality-database), the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, [Thomas Mock](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-07) did the initial cleaning for the scraped data. 
+The data is originally observed from Coffee Quality Institute website and was scraped by @James2018, the data was then re-posted on [Kaggle](https://www.kaggle.com/volpatto/coffee-quality-database-from-cqi?select=merged_data_cleaned.csv). Furthermore, @Mock2020 did the initial cleaning for the scraped data. 
 
 
 ## Data limitations
@@ -168,7 +168,7 @@ tb <- tibble(
 ))
 
 tb1 <- tb %>%
-  kable() %>%
+  kable(caption = "Data description for variable included in the data") %>%
   kable_styling(bootstrap_options = c("striped", "hover")) %>%
   scroll_box(width = "800px", height = "500px")
 tb1
@@ -230,7 +230,7 @@ The dataset contains information about the coffee sample’s altitude of origin,
 
 ### Altitude v/s Quality
 
-In this section, our team ran a model for the altitude of the sample and its total cupping score. The result is displayed in table \@ref(tab:alt-lrm) and figure \@ref(fig:alt-plot). The p-value is lower then 0.05 which indicates that the model is statistically significant. The result shows a positive relationship between altitude and quality of coffee beans produced. However, it is worth to notice that the Adjusted R Square of the model is extremely small, only 0.022, or 2% (See table \@ref(tab:glance), Appendix 1), suggesting an extremely weak model, that only 2% of the variation is explained. Therefore, I tried another method which is Pearson correlation coefficient to examine the relationship between altitude and cupping points. As suggested by table \@ref(tab:pearson), there are no significant correlation. 
+In this section, our team ran a model for the altitude of the sample and its total cupping score. The result is displayed in table \@ref(tab:alt-lrm) and figure \@ref(fig:alt-plot). The p-value is lower then 0.05 which indicates that the model is statistically significant. The result shows a positive relationship between altitude and quality of coffee beans produced. However, it is worth to notice that the Adjusted R Square of the model is extremely small, only 0.022, or 2% (See table \@ref(tab:glance-alt), Appendix 1), suggesting an extremely weak model, that only 2% of the variation is explained. Therefore, I tried another method which is Pearson correlation coefficient to examine the relationship between altitude and cupping points. As suggested by table \@ref(tab:pearson), there are no significant correlation. 
 
 There are some very interesting findings from \@ref(fig:alt-plot). For example, it seems that the majority of coffee samples were grown 750-2000m above sea levels. Also, most of coffee beans seems to score very high, around 80-85 points.
 
@@ -283,9 +283,10 @@ defects <- lm(total_cup_points ~ category_one_defects + category_two_defects, co
 defects %>%  broom::tidy() %>% kable(caption = "Defects linear regression model") %>% kable_styling()
 ```
 
-```{r def-plot, anchor = "Figure", results='asis',echo=FALSE,warning=FALSE,message=FALSE}
+```{r def-plot, anchor = "Figure", results='asis', fig.cap = "Relationship between defects and quality", echo=FALSE,warning=FALSE,message=FALSE}
 d <- defects %>% broom::augment()
-ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth()
+ggplot(d, aes(x = .fitted, y = .resid)) + geom_point() + geom_smooth() +
+  ggtitle("Defects v/s Quality")
 ```
 
 ```{r glance-defects}
@@ -408,9 +409,9 @@ pmtable <- topbean %>%
   count(method)
 
 pmtable %>%
-  kable(col.names = c("Processing Method", "Frequency")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"),
-                full_width = F)
+  kable(col.names = c("Processing Method", "Frequency"),
+        caption = "Processing Method Frequency Table") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
   
 ```
 
@@ -419,7 +420,7 @@ The bar chart \@ref(fig:q5p1) demonstrates the frequency of processing method in
 
 **Behavior of different processing method on the individual grading criteria of coffee**
 
-We picked 6 grading criteria, according to the coffee scoring article provided on [mycuppa](https://www.mycuppa.com.au/scoring-coffee):
+We picked 6 grading criteria, according to the coffee scoring article provided on @mycuppa:
 
 * Aroma
 * Aftertaste
@@ -440,7 +441,8 @@ grading <- pro_md %>%
 
 q5p2 <- grading %>%
   ggscatmat(columns = 2:7, color = "method") +
-  scale_colour_brewer(palette = "Set1")
+  scale_colour_brewer(palette = "Set1") +
+  ggtitle("Relationship between grading criteria by Processing Method")
 
 q5p2
 
@@ -598,6 +600,8 @@ alt_model %>% glance() %>%
 
 # References
 
+R packages used:
+
 - lubridate: @lubridate 
 - rmarkdown: @rmarkdown
 - tidyverse: @tidyverse 
@@ -605,13 +609,7 @@ alt_model %>% glance() %>%
 - ggplot2: @ggplot2 
 - plotly: @plotly 
 - bookdown: @bookdown 
+- GGally: @ggally
 
-- The dataset was taken from (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-07/readme.md)
 
-- Further inferences were drawn into the data taking help from (https://database.coffeeinstitute.org/coffee/357789/grade)
 
-- Cerda, R., Allinne, C., Gary, C., Tixier, P., Harvey, C. A., Krolczyk, L., ... & Avelino, J. (2017). Effects of shade, altitude and management on multiple ecosystem services in coffee agroecosystems. European Journal of Agronomy, 82, 308-319.
-
-- The data is in: Ethiopia has the best coffee. (2020). Retrieved 27 August 2020, from https://towardsdatascience.com/the-data-speak-ethiopia-has-the-best-coffee-91f88ed37e84
-
-- En.wikipedia.org. 2020. Coffee Bean. [online] Available at: <https://en.wikipedia.org/wiki/Coffee_bean> [Accessed 27 August 2020].
