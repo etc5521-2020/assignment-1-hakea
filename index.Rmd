@@ -617,17 +617,10 @@ Moreover, the sample size is small, and differ largely from country to country, 
 
 There dataset is outdated (it was collected in 2018), with several missing values in critical variables (i.e processing method, region, producers, etc.). They are obstacle for the researchers to find meaningful trends and relationships.
 
-Thus, it is recommended for future researchers to use a larger, more accurate and well-rounded dataset to perfrom their study. 
+Thus, it is recommended for future researchers to use a larger, more accurate and well-rounded dataset to perform their study. 
 
 ## Conclusion
 In conclusion, neither country of origin, nor altitude, nor defects really have large impact on the quality of coffee beans. So, if you want to buy a bag of coffee, you should keep that in mind and instead choose the coffee that best suited your taste. A little tip here, if you're looking for fermented and wild flavors in the cup, coffee bean from Ethiopia (processed with Natural/Dry method) will surely satisfy you.
-
-
-* For US, there are 3 areas that produce coffee beans: Mainland, Puerto Rico and Hawaii. In this research, the researchers merge all this areas together to better represent the country.
-
-* There are outliers in data, which may require further cleaning before certain analysis can take place.
-
-
 
 # Appendix 
 
