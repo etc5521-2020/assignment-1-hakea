@@ -1,8 +1,8 @@
 ---
 title: "ETC5521 Assignment 2"
-subtitle: "All about Coffee"
+subtitle: "What you should consider when buying a bag of coffee"
 team: Hakea
-author:
+authors:
   - Dang Thanh Nguyen
   - Rui Min Lin
   - Siddhant V Tirodkar
@@ -22,6 +22,42 @@ link-citations: yes
    
 
 ---
+<!-- CSS style for title page -->
+
+<style type="text/css">
+h1 {
+color: #4d3627
+}
+
+h2 {
+color: #5e422f
+}
+
+h3 {
+  color: #6f4e37
+}
+
+
+h1.title {
+  color:black;
+  text-align: center;
+  size:30px;
+}
+h3.subtitle {
+  color: #6f4e37;
+  text-align: center;
+}
+h4.author {
+  color: black;
+  text-align: center;
+}
+h4.date {
+  color: black;
+  text-align: center;
+}
+
+
+</style>
 
 # Introduction 
 
@@ -579,10 +615,9 @@ After looking at these plots, the conclusion drawn are as follows: The common ch
 
 # Conclusion 
 
-After a series of analysis on quality of coffee beans and coffee grading, we can now come up with suggestions for coffee lovers when planning to buy a premium bag of coffee beans. Surprisingly, from the data provided, factors like altitude and defects, only had a minimal influence on the quality of coffee bean (which contradicts to what we expected before the analysis). Good news is that, after a long development of coffee production, most of coffee beans seems to score very high,around 80-85 points. On the other hand, most observations does not have a consistent unit, e.g. altitude and weight of coffee bean bag, which did limits any further exploration on these variables.
+After a series of analysis on quality of coffee beans and coffee grading, we can now come up with suggestions for coffee lovers when planning to buy a premium bag of coffee beans. Surprisingly, from the data provided, factors like altitude and defects, had almost no influence on the quality of coffee bean (which contradicts to what we expected before the analysis). Good news is that, after a long development of coffee production, coffee quality seems to score very high,around 80-85 points across the world. 
 
-In conclusion, neither country of origin, nor altitude, nor defects really have large impact on the quality of coffee beans. So, if you want to buy a bag of coffee, you should know about that and choose the coffee that best suited your taste. A little tip here, if you're looking for fermented and wild flavors in the cup, coffee bean from Ethiopia (processed with Natural/Dry method) will be your first pick.
-Although we data scientists tend to have the habit of drinking coffee alone in the dept of night, coffee tastes better with a group of friends.
+In conclusion, neither country of origin, nor altitude, nor defects really have large impact on the quality of coffee beans. So, if you want to buy a bag of coffee, you should keep that in mind and instead choose the coffee that best suited your taste. A little tip here, if you're looking for fermented and wild flavors in the cup, coffee bean from Ethiopia (processed with Natural/Dry method) will surely satisfy you.
 
 # Appendix 
 
